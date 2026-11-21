@@ -1,6 +1,6 @@
 import React, { useState } from 'react';
 import { GraphNode, GraphEdge } from '../types';
-import { FileText, ExternalLink, Search, CheckCircle2, ChevronRight, Zap, ArrowDown, ShieldCheck, Link2 } from 'lucide-react';
+import { FileText, ExternalLink, Search, CheckCircle2, ChevronRight, Zap, ArrowUp, ShieldCheck, Link2 } from 'lucide-react';
 import { drillDeeper } from '../api/client';
 
 interface LineageSpineProps {
@@ -21,11 +21,15 @@ export const LineageSpine: React.FC<LineageSpineProps> = ({
   const [expandedQuoteId, setExpandedQuoteId] = useState<string | null>(null);
   const [drillingNodeId, setDrillingNodeId] = useState<string | null>(null);
 
-  // Lineage + Focus nodes sorted chronologically (earliest preceding -> focus event)
+  // Lineage + Focus nodes sorted latest-first (focus event -> earliest preceding)
   const lineageNodes = nodes
     .filter((n) => n.plane === 'lineage' || n.plane === 'focus')
     .filter((n) => (selectedThread === 'all' ? true : n.thread === selectedThread || n.plane === 'focus'))
-    .sort((a, b) => a.depth_index - b.depth_index);
+    .sort((a, b) => b.depth_index - a.depth_index);
+
+  // Edges are authored from earlier node -> later node, so when rendering
+  // latest-first the connector belongs to the node it leads *into*.
+  const incomingEdgeFor = (nodeId: string) => edges.find((e) => e.target === nodeId);
 
   const handleDrillDeeper = async (node: GraphNode) => {
     setDrillingNodeId(node.id);
@@ -64,7 +68,8 @@ export const LineageSpine: React.FC<LineageSpineProps> = ({
           const isDrilling = drillingNodeId === node.id;
 
           // Outgoing edge connecting this node to the next
-          const outgoingEdge = edges.find((e) => e.source === node.id);
+          // Connector leading into this node (previous chronological step)
+          const outgoingEdge = incomingEdgeFor(node.id);
 
           return (
             <React.Fragment key={node.id}>
@@ -175,7 +180,7 @@ export const LineageSpine: React.FC<LineageSpineProps> = ({
                 )}
               </div>
 
-              {/* High-Visibility Causal Bridge Connector between this node and next */}
+              {/* High-Visibility Causal Bridge Connector leading into the next (older) card */}
               {outgoingEdge && index < lineageNodes.length - 1 && (
                 <div className="py-2 px-3 my-1 rounded-xl bg-gradient-to-r from-blue-950/60 via-indigo-950/50 to-gray-950 border border-blue-800/40 shadow-inner flex flex-col md:flex-row md:items-center justify-between gap-2 text-xs animate-in fade-in">
                   <div className="flex items-center gap-2">
@@ -185,7 +190,7 @@ export const LineageSpine: React.FC<LineageSpineProps> = ({
                     <div>
                       <div className="flex items-center gap-2 font-mono">
                         <span className="font-bold text-blue-400 uppercase tracking-wide text-[11px]">
-                          ⚡ Causal Link: {outgoingEdge.relationship.toUpperCase()}
+                          ⚡ Preceded By: {outgoingEdge.relationship.toUpperCase()}
                         </span>
                         <span className="px-2 py-0.5 rounded-full bg-blue-900/60 text-blue-200 text-[10px] border border-blue-700/60">
                           {outgoingEdge.relevancy_label || 'Direct Precursor'}
@@ -202,7 +207,7 @@ export const LineageSpine: React.FC<LineageSpineProps> = ({
                     <span className="px-2 py-0.5 rounded bg-emerald-950/80 text-emerald-400 font-bold border border-emerald-800/60 text-xs">
                       {outgoingEdge.relevancy_percent || 95}%
                     </span>
-                    <ArrowDown className="w-3.5 h-3.5 text-blue-400 animate-bounce" />
+                    <ArrowUp className="w-3.5 h-3.5 text-blue-400 animate-bounce" />
                   </div>
                 </div>
               )}
