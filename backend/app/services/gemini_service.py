@@ -7,6 +7,12 @@ from app.models.schemas import CitationHit, InterrogationVerdict
 
 GEMINI_MODEL = "gemini-3.1-flash-lite"
 
+# Must stay in sync with GraphEdge.relationship in models/schemas.py
+ALLOWED_RELATIONSHIPS = {
+    "triggered", "amended", "complied_with", "escalated",
+    "contradicts", "cascaded_to", "likely_affects", "gap_preceded",
+}
+
 
 def _run_gemini(prompt: str) -> str:
     """Synchronous Gemini call wrapped for use in async context."""
@@ -123,7 +129,7 @@ For each consecutive pair of articles (1→2, 2→3, 3→breaking headline), gen
 You must produce exactly {len(articles)} edges (the last edge always connects the final article to the breaking headline).
 
 For each edge produce:
-- "relationship": short verb phrase (e.g. "triggered", "escalated", "enabled", "exposed", "caused")
+- "relationship": exactly one of: "triggered", "amended", "complied_with", "escalated", "contradicts", "cascaded_to", "likely_affects", "gap_preceded"
 - "connective_tissue": 1-2 sentence causal explanation of HOW this earlier event directly led to the next
 - "relevancy_label": 2-4 word label describing the causal mechanism (e.g. "Direct Regulatory Trigger", "Escalating Market Pressure")
 - "relevancy_percent": integer 70-99
@@ -141,7 +147,14 @@ Return ONLY a valid JSON array of exactly {len(articles)} edge objects. No markd
             raw = raw[:-3]
         edges = json.loads(raw.strip())
         if isinstance(edges, list) and len(edges) >= len(articles):
-            return edges[:len(articles)]
+            cleaned = []
+            for edge in edges[:len(articles)]:
+                if not isinstance(edge, dict):
+                    continue
+                if edge.get("relationship") not in ALLOWED_RELATIONSHIPS:
+                    edge.pop("relationship", None)
+                cleaned.append(edge)
+            return cleaned
     except Exception:
         pass
     return None

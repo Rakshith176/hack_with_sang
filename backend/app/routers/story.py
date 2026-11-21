@@ -5,7 +5,7 @@ from fastapi import APIRouter, HTTPException, Query
 from pydantic import BaseModel
 from app.models.schemas import StoryGraph, DrillDeeperRequest, GraphNode, GraphEdge, SourceEvidence, ClaimDriftRecord, ClaimDetail
 from app.services.serp_service import search_historical_archive, search_google_news
-from app.services.gemini_service import synthesize_lineage_edges
+from app.services.gemini_service import synthesize_lineage_edges, ALLOWED_RELATIONSHIPS
 
 router = APIRouter(prefix="/api/story", tags=["story"])
 
@@ -193,7 +193,9 @@ async def analyze_live_headline(req: AnalyzeRequest):
                 suggestion = gemini_edges[i] or {}
                 rel_label = str(suggestion.get("relevancy_label") or rel_label)
                 conn_tissue = str(suggestion.get("connective_tissue") or conn_tissue)
-                relationship = str(suggestion.get("relationship") or relationship)
+                suggested_rel = suggestion.get("relationship")
+                if isinstance(suggested_rel, str) and suggested_rel in ALLOWED_RELATIONSHIPS:
+                    relationship = suggested_rel
                 try:
                     rel_pct = max(60, min(99, int(suggestion.get("relevancy_percent", rel_pct))))
                 except (TypeError, ValueError):
