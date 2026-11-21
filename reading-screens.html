@@ -1,0 +1,323 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>The Paper Trail — home and the rest of a story</title>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Atkinson+Hyperlegible:ital,wght@0,400;0,700;1,400&family=Fraunces:ital,opsz,wght@0,9..144,500;0,9..144,620;1,9..144,500&display=swap">
+<style>
+  :root { --page:#E6E8E4; --ink:#1A1E1C; --muted:#3E4742; --line:#C5CAC3; }
+  * { box-sizing: border-box; }
+  html, body { margin: 0; }
+  body {
+    background: var(--page); color: var(--ink);
+    font-family: "Atkinson Hyperlegible", "Segoe UI", sans-serif;
+    line-height: 1.5; padding: 0 1.25rem 5rem;
+  }
+  a:focus-visible, button:focus-visible { outline: 2px solid var(--ink); outline-offset: 2px; }
+  .wrap { max-width: 980px; margin: 0 auto; }
+  header { padding: 2.4rem 0 1.2rem; border-bottom: 1px solid var(--line); }
+  h1 {
+    font-family: "Fraunces", Georgia, serif; font-weight: 500;
+    font-size: clamp(2rem, 4vw, 2.8rem); line-height: 1.08; letter-spacing: -0.02em;
+    margin: 0 0 0.7rem; max-width: 20ch;
+  }
+  .lede { max-width: 66ch; margin: 0; color: var(--muted); }
+  .jumps { display: flex; flex-wrap: wrap; gap: 0.4rem 1rem; margin-top: 1rem; }
+  .jumps a { color: var(--ink); }
+  .screen { padding: 2rem 0; border-bottom: 1px solid var(--line); scroll-margin-top: 0.75rem; }
+  .screen h2 {
+    font-family: "Fraunces", Georgia, serif; font-weight: 500;
+    font-size: 1.55rem; margin: 0 0 0.35rem;
+  }
+  .caption { max-width: 62ch; color: var(--muted); margin: 0 0 1rem; }
+  .frame { border: 1px solid #B7BDB6; background: #F4F7F8; }
+  .sheet { max-width: 40rem; margin: 0 auto; padding: 1.35rem 1.25rem 1.8rem; color: #1B2428; }
+  .brand {
+    display: flex; justify-content: space-between; gap: 1rem; align-items: baseline;
+    border-bottom: 2px solid #1B2428; padding-bottom: 0.55rem; margin-bottom: 0.85rem;
+  }
+  .brand strong { font-family: "Fraunces", Georgia, serif; font-weight: 500; font-size: 1.45rem; }
+  .meta { color: #3E4C51; font-size: 0.95rem; margin: 0; }
+  .status { font-weight: 700; margin: 0.15rem 0; }
+  .status.changed { color: #9F2D2D; }
+  .status.record { color: #0F6E56; }
+  .status.thin { color: #3E4C51; }
+  h3.hl {
+    font-family: "Fraunces", Georgia, serif; font-weight: 620;
+    font-size: 1.55rem; line-height: 1.18; letter-spacing: -0.02em; margin: 0.25rem 0 0.7rem;
+  }
+  .row, .back, .check button, .more, .filters button, input[type="search"] { font: inherit; color: inherit; }
+  input[type="search"] {
+    width: 100%; background: transparent; border: 1px solid #D5DEE2;
+    padding: 0.55rem 0.65rem; margin: 0.2rem 0 0.35rem;
+  }
+  .filters { display: flex; flex-wrap: wrap; gap: 0.35rem 0.7rem; margin-bottom: 0.2rem; }
+  .filters button {
+    background: transparent; border: 0; border-bottom: 2px solid transparent;
+    padding: 0.45rem 0.05rem; cursor: pointer; color: #3E4C51;
+  }
+  .filters button[aria-pressed="true"] { color: #1B2428; border-bottom-color: #1B2428; }
+  .row {
+    display: block; width: 100%; text-align: left; background: transparent;
+    border: 0; border-top: 1px solid #D5DEE2; padding: 0.85rem 0; cursor: pointer;
+  }
+  .row h3 {
+    font-family: "Fraunces", Georgia, serif; font-weight: 620; font-size: 1.28rem;
+    line-height: 1.22; letter-spacing: -0.015em; margin: 0.15rem 0;
+  }
+  .note { margin: 0.3rem 0 1rem; padding-left: 0.8rem; border-left: 3px solid #0F6E56; }
+  .note p, .pair p, .reach li, .verdict p { margin: 0.2rem 0; }
+  .pair { display: grid; gap: 0.9rem; margin: 0.3rem 0 0.8rem; }
+  .pair h4, .trail h4, .reach h4, .check h4 { margin: 0 0 0.2rem; font-size: 1.02rem; }
+  blockquote { margin: 0.25rem 0 0; }
+  a.src { color: #0F6E56; text-underline-offset: 0.14em; }
+  a.src:hover { text-decoration-thickness: 2px; }
+  .thread { list-style: none; margin: 0.3rem 0 0; padding: 0; }
+  .knot {
+    display: grid; grid-template-columns: 1.1rem minmax(0, 1fr); gap: 0.75rem; padding: 0 0 0.95rem;
+  }
+  .rail { position: relative; }
+  .rail::before {
+    content: ""; position: absolute; left: 50%; top: 0; bottom: -0.95rem; width: 2px;
+    background: #C4552A; transform: translateX(-50%);
+  }
+  .knot:last-child .rail::before { bottom: 0.35rem; }
+  .dot {
+    position: relative; z-index: 1; display: block; width: 0.72rem; height: 0.72rem;
+    margin: 0.35rem auto 0; border: 2px solid #C4552A; background: #F4F7F8; border-radius: 50%;
+  }
+  .knot.gap .dot { background: transparent; border-style: dashed; }
+  .when-line { display: flex; flex-wrap: wrap; gap: 0.15rem 0.75rem; align-items: baseline; color: #3E4C51; }
+  .reach ul { margin: 0.2rem 0 0; padding-left: 1.1rem; }
+  .reach li { margin: 0.4rem 0; }
+  .check { border-top: 1px solid #D5DEE2; padding-top: 0.8rem; }
+  .check button, .back, .more {
+    background: transparent; border: 1px solid #1B2428; padding: 0.5rem 0.75rem; cursor: pointer; margin-top: 0.45rem;
+  }
+  .verdict { margin-top: 0.75rem; padding-left: 0.8rem; border-left: 3px solid #9F2D2D; }
+  .back { display: inline-block; margin-bottom: 0.7rem; text-decoration: none; }
+  .empty { color: #3E4C51; }
+  @media (prefers-reduced-motion: reduce) { * { scroll-behavior: auto !important; } }
+</style>
+</head>
+<body>
+<div class="wrap">
+  <header>
+    <h1>Home is today’s list. The other parts open inside the story.</h1>
+    <p class="lede">Same column as the news you liked. Nothing is a separate tool. You start on today’s headlines, open one, and the claim, the trail, who it reaches, and the check are sections of that story.</p>
+    <nav class="jumps" aria-label="Screens">
+      <a href="#home">Home</a>
+      <a href="#changed">What changed</a>
+      <a href="#trail">How we got here</a>
+      <a href="#reaches">Who this reaches</a>
+      <a href="#check">Check this claim</a>
+    </nav>
+  </header>
+
+  <section class="screen" id="home">
+    <h2>Home</h2>
+    <p class="caption">This replaces the news popup and the story menu. Each row is a headline, a plain status, one sentence, and how far back the trail goes. A story that has not been traced yet says so, and opening it starts the check.</p>
+    <div class="frame"><div class="sheet" id="home-app"></div></div>
+  </section>
+
+  <section class="screen" id="changed">
+    <h2>What changed</h2>
+    <p class="caption">This is the old drift view. The original sentence and the headline sit one after the other, each with its page. Then one sentence says what was dropped, widened, or swapped.</p>
+    <div class="frame"><div class="sheet">
+      <a class="back" href="#home">Today</a>
+      <p class="meta">This morning, Several outlets</p>
+      <p class="status changed">The telling changed</p>
+      <h3 class="hl">Headlines call the computer outage a cyberattack on hospitals and banks</h3>
+      <div class="note"><p><strong>Reading note.</strong> The outage is real. The company’s own note blames a faulty configuration file, not an attack. That cause was swapped out as the story spread.</p></div>
+      <div class="pair">
+        <div>
+          <h4>What the record says</h4>
+          <p class="meta">Company incident note</p>
+          <p><a class="src" href="https://www.crowdstrike.com/blog/falcon-content-incident-remediation-and-guidance/">crowdstrike.com</a></p>
+          <blockquote>A logic flaw in a channel file caused a memory error on Windows systems running Sensor 7.11.</blockquote>
+        </div>
+        <div>
+          <h4>What the headline says</h4>
+          <p class="meta">This morning’s headlines</p>
+          <p><a class="src" href="https://www.reuters.com/technology/global-cyber-outage-grounds-flights-hits-media-financial-telecoms-2024-07-19/">reuters.com</a></p>
+          <blockquote>A coordinated cyberattack paralyzed healthcare and finance.</blockquote>
+        </div>
+      </div>
+      <p><strong>The cause was swapped.</strong> A software fault became an attack. The file name and the sensor version disappeared.</p>
+    </div></div>
+  </section>
+
+  <section class="screen" id="trail">
+    <h2>How we got here</h2>
+    <p class="caption">This is the old lineage. Newest first. The date and the website sit on the same line. A dashed knot is a stretch where nothing public was filed. Look further back is the old drill-deeper: it adds an older page to this same thread.</p>
+    <div class="frame"><div class="sheet">
+      <a class="back" href="#home">Today</a>
+      <p class="meta">This morning, Several outlets</p>
+      <h3 class="hl">Headlines call the computer outage a cyberattack on hospitals and banks</h3>
+      <div class="trail">
+        <h4>How we got here</h4>
+        <ol class="thread" id="thread">
+          <li><div class="knot">
+            <span class="rail" aria-hidden="true"><span class="dot"></span></span>
+            <div>
+              <p class="when-line">Today, 8:12 <a class="src" href="https://www.reuters.com/technology/global-cyber-outage-grounds-flights-hits-media-financial-telecoms-2024-07-19/">reuters.com</a></p>
+              <p><strong>Headlines call it an attack</strong></p>
+              <p class="meta">Reported<br>Several outlets</p>
+            </div>
+          </div></li>
+          <li><div class="knot">
+            <span class="rail" aria-hidden="true"><span class="dot"></span></span>
+            <div>
+              <p class="when-line">Today, 4:40 <a class="src" href="https://www.crowdstrike.com/blog/falcon-content-incident-remediation-and-guidance/">crowdstrike.com</a></p>
+              <p><strong>The company says a bad update caused the crash</strong></p>
+              <p class="meta"><span class="status record">On the record</span><br>Company note</p>
+              <blockquote>A logic flaw in a channel file caused a memory error on Windows systems running Sensor 7.11.</blockquote>
+            </div>
+          </div></li>
+          <li><div class="knot">
+            <span class="rail" aria-hidden="true"><span class="dot"></span></span>
+            <div>
+              <p class="when-line">19 July, early <a class="src" href="https://www.cisa.gov/news-events/alerts/2024/07/19/widespread-it-outage-caused-software-update">cisa.gov</a></p>
+              <p><strong>Machines running Sensor 7.11 start failing</strong></p>
+              <p class="meta"><span class="status record">On the record</span><br>Incident report</p>
+            </div>
+          </div></li>
+          <li><div class="knot gap">
+            <span class="rail" aria-hidden="true"><span class="dot"></span></span>
+            <div>
+              <p class="when-line">March to June</p>
+              <p><strong>Nothing public connects the February proposal to the July crash</strong></p>
+              <p class="meta">Not enough yet<br>No filing found</p>
+            </div>
+          </div></li>
+          <li><div class="knot">
+            <span class="rail" aria-hidden="true"><span class="dot"></span></span>
+            <div>
+              <p class="when-line">February <a class="src" href="https://learn.microsoft.com/en-us/windows-hardware/drivers/ifs/about-file-system-minifilter-drivers">learn.microsoft.com</a></p>
+              <p><strong>A design note let a driver load a file at startup</strong></p>
+              <p class="meta"><span class="status record">On the record</span><br>Engineering proposal</p>
+            </div>
+          </div></li>
+        </ol>
+        <button class="more" type="button" id="deeper">Look further back</button>
+      </div>
+    </div></div>
+  </section>
+
+  <section class="screen" id="reaches">
+    <h2>Who this reaches</h2>
+    <p class="caption">This is the old ripple view. Three short lines. Each one says whether it is known, only reported, or still possible. No map, no second graph.</p>
+    <div class="frame"><div class="sheet">
+      <a class="back" href="#home">Today</a>
+      <p class="meta">This morning, Several outlets</p>
+      <h3 class="hl">Headlines call the computer outage a cyberattack on hospitals and banks</h3>
+      <div class="reach">
+        <h4>Who this reaches</h4>
+        <ul>
+          <li><strong>Airline crew systems.</strong> Flights were held. Known from airport reports. <a class="src" href="https://apnews.com/article/crowdstrike-outage-flights-grounded-banks-cyberattack-explained-b26a5789fcf78c6ff11ff230800bfcf7">apnews.com</a></li>
+          <li><strong>Hospital record sync.</strong> Some clinics switched to paper. Reported. Not a measured count.</li>
+          <li><strong>Customers on Sensor 7.11.</strong> Named in the incident note. Stated by the company. <a class="src" href="https://www.crowdstrike.com/blog/falcon-content-incident-remediation-and-guidance/">crowdstrike.com</a></li>
+        </ul>
+      </div>
+    </div></div>
+  </section>
+
+  <section class="screen" id="check">
+    <h2>Check this claim</h2>
+    <p class="caption">This is the old interrogation. It runs only when you ask. The answer is a sentence, not a score, and it names the pages it used. It does not say true or false.</p>
+    <div class="frame"><div class="sheet">
+      <a class="back" href="#home">Today</a>
+      <p class="meta">This morning, Several outlets</p>
+      <h3 class="hl">Headlines call the computer outage a cyberattack on hospitals and banks</h3>
+      <div class="check">
+        <h4>Check this claim</h4>
+        <p>This was a state-sponsored cyberattack.</p>
+        <button type="button" id="check-btn">Hide this check</button>
+        <div class="verdict" id="verdict">
+          <p><strong>A disagreement was found.</strong> The company’s incident note describes a logic flaw in a configuration file. Nothing in this trail describes an attack.</p>
+          <p class="meta">Used <a class="src" href="https://www.crowdstrike.com/blog/falcon-content-incident-remediation-and-guidance/">crowdstrike.com</a> and <a class="src" href="https://www.reuters.com/technology/global-cyber-outage-grounds-flights-hits-media-financial-telecoms-2024-07-19/">reuters.com</a>. This check only reads sources already in the trail.</p>
+        </div>
+      </div>
+    </div></div>
+  </section>
+</div>
+<script>
+const STORIES = [
+  { id: "outage", when: "This morning", source: "Several outlets", status: "changed", statusText: "The telling changed", headline: "Headlines call the computer outage a cyberattack on hospitals and banks", oneLine: "The company described a bad update. The headlines describe an attack.", trail: "Goes back to February" },
+  { id: "chips", when: "Today", source: "Financial Times", status: "changed", statusText: "The telling changed", headline: "An export rule is being reported as a total ban on advanced chips", oneLine: "The rule sets a license threshold. Headlines call it a ban.", trail: "Goes back one month" },
+  { id: "flights", when: "Today", source: "Aviation wire", status: "disagree", statusText: "People disagree", headline: "Airlines have grounded their fleets indefinitely", oneLine: "The directive names 171 aircraft and a short inspection. The headline says fleets are grounded indefinitely.", trail: "Goes back three weeks" },
+  { id: "clinics", when: "This afternoon", source: "Local reports", status: "thin", statusText: "Not enough yet", headline: "Clinics may have switched to paper during the outage", oneLine: "A few reports mention paper records. There is no count, and no hospital filing.", trail: "One day, then a gap" },
+  { id: "banks", when: "This hour", source: "A wire service", status: "thin", statusText: "Not checked yet", headline: "A bank says payment systems are back after the morning outage", oneLine: "This headline has not been traced. Open it to put the claim on a trail.", trail: "Not traced yet" }
+];
+const FILTERS = [["all","All"],["changed","The telling changed"],["disagree","People disagree"],["thin","Not enough yet"]];
+const home = { q: "", filter: "all", open: null };
+function esc(s){return String(s).replace(/[&<>"']/g,c=>({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;","'":"&#39;"}[c]));}
+function renderHome(focus) {
+  const q = home.q.trim().toLowerCase();
+  const rows = STORIES.filter(s => (home.filter === "all" || s.status === home.filter) && (!q || (s.headline+" "+s.oneLine+" "+s.source).toLowerCase().includes(q)));
+  const list = rows.map(s => {
+    if (s.id === home.open) {
+      return `<article class="row" style="cursor:default">
+        <p class="meta">${esc(s.when)}, ${esc(s.source)}</p>
+        <p class="status ${s.status === "changed" ? "changed" : s.status === "disagree" ? "" : "thin"}">${esc(s.statusText)}</p>
+        <h3>${esc(s.headline)}</h3>
+        <p>Opened. The claim, the trail, who it reaches, and the check are the sections below. <a href="#changed">Start with what changed.</a></p>
+        <button class="back" type="button" data-act="close">Close this story</button>
+      </article>`;
+    }
+    return `<button class="row" type="button" data-act="open" data-id="${s.id}">
+      <p class="meta">${esc(s.when)}, ${esc(s.source)}</p>
+      <p class="status ${s.status === "changed" ? "changed" : "thin"}">${esc(s.statusText)}</p>
+      <h3>${esc(s.headline)}</h3>
+      <p class="meta">${esc(s.oneLine)}</p>
+      <p class="meta">${esc(s.trail)}</p>
+    </button>`;
+  }).join("");
+  document.getElementById("home-app").innerHTML = `
+    <div class="brand"><strong>The Paper Trail</strong><span class="meta">Saturday 21 November</span></div>
+    <input id="q" type="search" placeholder="Search today’s headlines" aria-label="Search today’s headlines" value="${esc(home.q)}">
+    <div class="filters">${FILTERS.map(([id,label]) => `<button type="button" data-act="filter" data-id="${id}" aria-pressed="${home.filter===id}">${label}</button>`).join("")}</div>
+    ${rows.length ? list : `<p class="empty">Nothing in today’s list matches that.</p>`}`;
+  if (focus) {
+    const el = document.getElementById("q");
+    if (el) { el.focus(); el.setSelectionRange(el.value.length, el.value.length); }
+  }
+}
+document.body.addEventListener("click", (e) => {
+  const btn = e.target.closest("[data-act]");
+  if (!btn || !btn.closest("#home-app")) return;
+  const act = btn.getAttribute("data-act");
+  if (act === "filter") home.filter = btn.getAttribute("data-id");
+  if (act === "open") home.open = btn.getAttribute("data-id");
+  if (act === "close") home.open = null;
+  renderHome();
+});
+document.body.addEventListener("input", (e) => {
+  if (e.target.id !== "q") return;
+  home.q = e.target.value;
+  renderHome(true);
+});
+document.getElementById("deeper").addEventListener("click", (e) => {
+  const btn = e.currentTarget;
+  if (btn.getAttribute("aria-pressed") === "true") return;
+  btn.setAttribute("aria-pressed", "true");
+  btn.textContent = "Added to the trail";
+  const li = document.createElement("li");
+  li.innerHTML = `<div class="knot"><span class="rail" aria-hidden="true"><span class="dot"></span></span><div>
+    <p class="when-line">March 2021 <a class="src" href="https://learn.microsoft.com/en-us/windows-hardware/drivers/ifs/about-file-system-minifilter-drivers">learn.microsoft.com</a></p>
+    <p><strong>A driver note puts telemetry in the Windows kernel</strong></p>
+    <p class="meta"><span class="status record">On the record</span><br>Microsoft driver guide</p>
+  </div></div>`;
+  document.getElementById("thread").appendChild(li);
+});
+document.getElementById("check-btn").addEventListener("click", () => {
+  const v = document.getElementById("verdict");
+  const hidden = v.hasAttribute("hidden");
+  if (hidden) v.removeAttribute("hidden"); else v.setAttribute("hidden", "");
+  document.getElementById("check-btn").textContent = hidden ? "Hide this check" : "Check this claim";
+});
+renderHome();
+</script>
+</body>
+</html>

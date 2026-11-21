@@ -158,3 +158,54 @@ Return ONLY a valid JSON array of exactly {len(articles)} edge objects. No markd
     except Exception:
         pass
     return None
+
+
+def _plain_json(raw: str) -> dict:
+    text = raw.strip()
+    if text.startswith("```json"):
+        text = text[7:]
+    if text.startswith("```"):
+        text = text[3:]
+    if text.endswith("```"):
+        text = text[:-3]
+    data = json.loads(text.strip())
+    return data if isinstance(data, dict) else {}
+
+
+async def explain_misalignment(
+    earlier_who: str,
+    earlier_when: str,
+    earlier_text: str,
+    headline_who: str,
+    headline_when: str,
+    headline_text: str,
+) -> Optional[dict]:
+    """Says why a headline does not line up with an earlier report, in plain words."""
+    if not GEMINI_API_KEY or not earlier_text.strip() or not headline_text.strip():
+        return None
+
+    prompt = f"""You compare an earlier report with a later headline for a news reader.
+Explain why they do not line up.
+
+Earlier report, {earlier_when}, {earlier_who}:
+"{earlier_text[:500]}"
+
+Headline, {headline_when}, {headline_who}:
+"{headline_text[:300]}"
+
+Return ONLY JSON with:
+- "part": 3 to 6 words naming the fact that diverged
+- "why": one or two sentences. Name what the earlier report said that the headline dropped, widened, or replaced. If they are not about the same fact, say so and name both. Do not paste either text in full. Do not use the words epistemic, mutation, drift, or aligned.
+
+Example why: "The record calls it a logic flaw in one channel file. The headline drops that and calls it a hostile cyberattack."
+"""
+    try:
+        loop = asyncio.get_event_loop()
+        data = _plain_json(await loop.run_in_executor(None, _run_gemini, prompt))
+        part = str(data.get("part") or "").strip()
+        why = str(data.get("why") or "").strip()
+        if len(why) < 20:
+            return None
+        return {"part": part[:80], "why": why[:420]}
+    except Exception:
+        return None

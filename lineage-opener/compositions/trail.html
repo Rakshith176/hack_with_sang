@@ -1,0 +1,261 @@
+<template>
+  <style>
+    @font-face {
+      font-family: "Atkinson Hyperlegible";
+      src: url("assets/fonts/atkinson-hyperlegible-400.woff2") format("woff2");
+      font-weight: 400;
+      font-style: normal;
+    }
+    @font-face {
+      font-family: "Atkinson Hyperlegible";
+      src: url("assets/fonts/atkinson-hyperlegible-700.woff2") format("woff2");
+      font-weight: 700;
+      font-style: normal;
+    }
+    #root {
+      position: absolute;
+      inset: 0;
+      overflow: hidden;
+      background: #f4f7f8;
+      color: #1b2428;
+      font-family: "Atkinson Hyperlegible", sans-serif;
+    }
+    #cam {
+      position: absolute;
+      left: 0;
+      top: 0;
+      width: 1920px;
+      height: 3600px;
+      transform-origin: 180px 0;
+    }
+    .sheet {
+      position: absolute;
+      left: 180px;
+      top: 0;
+      width: 1460px;
+      height: 3240px;
+      background: #fff;
+      box-shadow: 14px 14px 0 #d5dee2;
+    }
+    .thread {
+      position: absolute;
+      left: 64px;
+      top: 120px;
+      bottom: 120px;
+      width: 6px;
+      background: #c4552a;
+      transform-origin: top center;
+    }
+    .stop {
+      position: absolute;
+      left: 0;
+      width: 100%;
+      height: 1080px;
+      display: flex;
+      flex-direction: column;
+      justify-content: flex-start;
+      padding: 220px 80px 0 150px;
+    }
+    .stop-file { top: 0; }
+    .stop-crash { top: 1080px; }
+    .stop-claim { top: 2160px; }
+    .when {
+      margin: 0 0 8px;
+      font-size: 36px;
+      font-weight: 700;
+      letter-spacing: -0.03em;
+      color: #c4552a;
+    }
+    .what {
+      margin: 0;
+      font-size: 108px;
+      font-weight: 700;
+      letter-spacing: -0.045em;
+      line-height: 0.98;
+    }
+    #file-line { display: inline-block; clip-path: inset(0 100% 0 0); }
+    #num, #cw1, #cw2, #cw3, #title, #rule, #brand, #close, #drift { opacity: 0; }
+    #rule { transform-origin: left center; }
+    #head {
+      position: absolute;
+      left: 96px;
+      top: 118px;
+      width: 22px;
+      height: 78px;
+      background: #c4552a;
+    }
+    #num {
+      font-size: 280px;
+      font-weight: 700;
+      letter-spacing: -0.06em;
+      line-height: 0.82;
+      margin: 0;
+    }
+    #crash-words {
+      margin: 8px 0 0;
+      font-size: 64px;
+      font-weight: 700;
+      letter-spacing: -0.04em;
+    }
+    #crash-words span { display: inline-block; margin-right: 16px; }
+    #scrap {
+      display: inline-block;
+      background: #fff;
+      box-shadow: 8px 8px 0 #d5dee2;
+      padding: 18px 28px 22px;
+    }
+    #scrap p {
+      margin: 0;
+      font-size: 64px;
+      font-weight: 700;
+      letter-spacing: -0.04em;
+      line-height: 1.05;
+    }
+    #end {
+      position: absolute;
+      left: 620px;
+      top: 160px;
+      width: 1180px;
+    }
+    #title {
+      margin: 0;
+      font-size: 132px;
+      font-weight: 700;
+      letter-spacing: -0.05em;
+      line-height: 0.9;
+    }
+    #title em {
+      font-style: normal;
+      color: #c4552a;
+    }
+    #brand {
+      margin: 18px 0 0;
+      font-size: 42px;
+      font-weight: 700;
+      letter-spacing: -0.03em;
+    }
+    .rule {
+      width: 96px;
+      height: 8px;
+      background: #c4552a;
+      margin: 22px 0 18px;
+    }
+    #close {
+      margin: 0;
+      font-size: 48px;
+      font-weight: 700;
+      letter-spacing: -0.03em;
+    }
+    #drift {
+      margin: 10px 0 0;
+      font-size: 32px;
+      color: #3e4c51;
+    }
+  </style>
+  <div id="root" data-composition-id="trail" data-width="1920" data-height="1080" data-layout-allow-overflow>
+    <div id="stage" class="clip" data-start="0" data-duration="23.2" data-track-index="2">
+      <div id="cam">
+        <div class="sheet">
+          <div id="thread" class="thread"></div>
+          <div class="stop stop-file">
+            <p class="when">04:09</p>
+            <p class="what"><span id="file-line">A file goes out</span></p>
+          </div>
+          <div class="stop stop-crash">
+            <p id="num">8.5</p>
+            <p id="crash-words"><span id="cw1">million</span><span id="cw2">computers</span><span id="cw3">crash</span></p>
+          </div>
+          <div class="stop stop-claim">
+            <div id="scrap"><p>The headline calls it an attack</p></div>
+          </div>
+        </div>
+      </div>
+      <div id="end">
+        <h1 id="title">The Paper <em>Trail</em></h1>
+        <div id="rule" class="rule"></div>
+        <p id="brand">PlaceWire</p>
+        <p id="close" data-hold="end">The trail ends at a file update.</p>
+        <p id="drift">The headline called it an attack.</p>
+      </div>
+    </div>
+  </div>
+  <script>
+    const tl = gsap.timeline({ paused: true });
+
+    tl.fromTo(
+      "#thread",
+      { scaleY: 0, transformOrigin: "top center" },
+      { scaleY: 1, duration: 16.2, ease: "none" },
+      0.3,
+    );
+
+    tl.fromTo(
+      "#file-line",
+      { clipPath: "inset(0 100% 0 0)" },
+      { clipPath: "inset(0 0% 0 0)", duration: 0.7, ease: "power3.out" },
+      0.35,
+    );
+
+    tl.fromTo(
+      "#cam",
+      { y: 0, scale: 1, filter: "blur(0px)" },
+      {
+        keyframes: [
+          { y: 0, scale: 1, filter: "blur(0px)", duration: 5.2, ease: "none" },
+          { filter: "blur(8px)", duration: 0.18, ease: "power2.in" },
+          { y: -1080, filter: "blur(0px)", duration: 0.45, ease: "power3.inOut" },
+          { y: -1080, duration: 5.0, ease: "none" },
+          { filter: "blur(8px)", duration: 0.16, ease: "power2.in" },
+          { y: -2160, filter: "blur(0px)", duration: 0.42, ease: "power3.inOut" },
+          { y: -2160, duration: 4.6, ease: "none" },
+          { scale: 0.24, y: 48, duration: 1.2, ease: "power2.inOut" },
+        ],
+        ease: "none",
+      },
+      0.4,
+    );
+
+    tl.fromTo(
+      "#num",
+      { scale: 1.45, rotation: -6, opacity: 0 },
+      { scale: 1, rotation: 0, opacity: 1, duration: 0.42, ease: "expo.out" },
+      6.4,
+    );
+    tl.fromTo(
+      "#cw1, #cw2, #cw3",
+      { filter: "blur(8px)", opacity: 0 },
+      { filter: "blur(0px)", opacity: 1, duration: 0.16, stagger: 0.08, ease: "power4.out" },
+      6.9,
+    );
+
+    tl.fromTo(
+      "#scrap",
+      { x: 520, y: -60, rotation: 8 },
+      { x: 0, y: 0, rotation: -1.6, duration: 0.55, ease: "power4.out" },
+      12.3,
+    );
+
+    tl.fromTo(
+      "#title",
+      { scale: 1.28, rotation: -5, opacity: 0 },
+      { scale: 1, rotation: 0, opacity: 1, duration: 0.34, ease: "power4.out" },
+      18.4,
+    );
+    tl.fromTo("#rule", { scaleX: 0, opacity: 0 }, { scaleX: 1, opacity: 1, duration: 0.28, ease: "power3.out" }, 18.6);
+    tl.fromTo(
+      "#brand",
+      { filter: "blur(6px)", opacity: 0 },
+      { filter: "blur(0px)", opacity: 1, duration: 0.22, ease: "power4.out" },
+      19.15,
+    );
+    tl.fromTo(
+      "#close",
+      { filter: "blur(8px)", opacity: 0 },
+      { filter: "blur(0px)", opacity: 1, duration: 0.28, ease: "power4.out" },
+      19.5,
+    );
+    tl.fromTo("#drift", { opacity: 0 }, { opacity: 1, duration: 0.3, ease: "power2.out" }, 20.1);
+
+    window.__timelines["trail"] = tl;
+  </script>
+</template>

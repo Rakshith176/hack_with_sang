@@ -3,7 +3,7 @@ from fastapi.middleware.cors import CORSMiddleware
 from app.routers import story, interrogate
 
 app = FastAPI(
-    title="PlaceWire (VeritasMesh) API",
+    title="The Paper Trail (VeritasMesh) API",
     description="Epistemic Knowledge Graph & Forensics Engine powered by SerpApi, You.com & Gemini 2.5 Flash",
     version="1.0.0"
 )
@@ -22,7 +22,7 @@ app.include_router(interrogate.router)
 
 @app.get("/api/health")
 async def health_check():
-    return {"status": "ok", "service": "PlaceWire Backend"}
+    return {"status": "ok", "service": "The Paper Trail Backend"}
 
 if __name__ == "__main__":
     import uvicorn

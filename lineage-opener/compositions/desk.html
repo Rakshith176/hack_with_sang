@@ -1,0 +1,382 @@
+<template>
+  <style>
+    @font-face {
+      font-family: "Atkinson Hyperlegible";
+      src: url("assets/fonts/atkinson-hyperlegible-400.woff2") format("woff2");
+      font-weight: 400;
+      font-style: normal;
+    }
+    @font-face {
+      font-family: "Atkinson Hyperlegible";
+      src: url("assets/fonts/atkinson-hyperlegible-700.woff2") format("woff2");
+      font-weight: 700;
+      font-style: normal;
+    }
+    #root {
+      position: absolute;
+      inset: 0;
+      background: #f4f7f8;
+      color: #1b2428;
+      font-family: "Atkinson Hyperlegible", sans-serif;
+      overflow: hidden;
+    }
+    .shot {
+      position: absolute;
+      inset: 0;
+      padding: 80px 96px;
+    }
+    .phone {
+      position: relative;
+      background: #1b2428;
+      border-radius: 48px;
+      padding: 14px;
+      box-shadow: 0 28px 48px rgba(27, 36, 40, 0.16);
+    }
+    .phone-lg { width: 1320px; height: 1680px; border-radius: 84px; padding: 22px; position: absolute; left: 48px; top: 36px; }
+    .phone-md { width: 460px; height: 860px; flex: none; }
+    .phone-sm { width: 260px; height: 280px; flex: none; z-index: 1; }
+    .screen {
+      background: #f4f7f8;
+      border-radius: 36px;
+      height: 100%;
+      padding: 36px 32px;
+      display: flex;
+      flex-direction: column;
+    }
+    .phone-md .note p { font-size: 32px; }
+    .phone-md .note .hot { font-size: 40px; margin-top: 8px; }
+    .phone-md .note { padding: 20px 18px 22px; }
+    .phone-sm .screen { padding: 28px 22px; }
+    .phone-sm .clock { font-size: 28px; margin-bottom: 36px; }
+    .echo {
+      margin: 0;
+      color: #c4552a;
+      font-size: 36px;
+      font-weight: 700;
+      letter-spacing: -0.03em;
+      line-height: 1.05;
+    }
+    #shot-alert { padding: 0; }
+    #shot-alert .clock { font-size: 42px; margin: 28px 8px 36px; }
+    #shot-alert .note { margin: 12px 8px 0; padding: 40px 36px 48px; }
+    #shot-alert .note p { font-size: 84px; line-height: 1.05; }
+    #shot-alert .note .hot { font-size: 108px; margin-top: 18px; }
+    .clock {
+      font-size: 28px;
+      font-weight: 700;
+      letter-spacing: -0.03em;
+      margin-bottom: 28px;
+    }
+    .note {
+      background: #fff;
+      border: 1px solid #d5dee2;
+      border-radius: 22px;
+      padding: 28px 28px 32px;
+    }
+    .note p {
+      font-size: 48px;
+      font-weight: 700;
+      letter-spacing: -0.03em;
+      line-height: 1.12;
+      margin: 0;
+    }
+    .note .hot { color: #c4552a; font-size: 64px; margin-top: 12px; }
+    .side {
+      position: absolute;
+      right: -3px;
+      top: 160px;
+      width: 4px;
+      height: 72px;
+      background: #0e1518;
+      border-radius: 2px;
+    }
+    .why-row {
+      display: flex;
+      align-items: center;
+      gap: 72px;
+      height: 100%;
+    }
+    .why-word {
+      font-size: 300px;
+      font-weight: 700;
+      letter-spacing: -0.045em;
+      line-height: 0.84;
+      margin: 0;
+    }
+    .printer {
+      display: flex;
+      flex-direction: column;
+      align-items: flex-start;
+      height: 100%;
+    }
+    .slot {
+      position: absolute;
+      left: 76px;
+      bottom: 12px;
+      width: 128px;
+      height: 8px;
+      background: #0e1518;
+      border-radius: 4px;
+    }
+    #shot-reports,
+    #shot-file,
+    #shot-joins,
+    #shot-name { padding-top: 40px; padding-bottom: 36px; }
+    .receipt {
+      position: relative;
+      z-index: 2;
+      background: #fff;
+      width: 1240px;
+      margin-top: -8px;
+      padding: 48px 48px 36px 44px;
+      box-shadow: 0 18px 32px rgba(27, 36, 40, 0.14);
+    }
+    .row {
+      display: grid;
+      grid-template-columns: 6px 1fr;
+      column-gap: 28px;
+      margin: 0 0 22px;
+    }
+    .row:last-child { margin-bottom: 0; }
+    .thread {
+      background: #c4552a;
+      border-radius: 3px;
+      min-height: 100%;
+    }
+    .when {
+      font-size: 32px;
+      font-weight: 700;
+      letter-spacing: -0.03em;
+      color: #c4552a;
+      margin: 0 0 4px;
+    }
+    .what {
+      font-size: 44px;
+      font-weight: 400;
+      letter-spacing: -0.03em;
+      line-height: 1.15;
+      margin: 0;
+    }
+    .row.quiet .when { color: #3e4c51; }
+    .row.quiet .what { color: #3e4c51; font-size: 36px; }
+    .row.live .what { font-size: 64px; font-weight: 700; }
+    .brand {
+      font-size: 64px;
+      font-weight: 700;
+      letter-spacing: -0.04em;
+      line-height: 1;
+      margin: 0 0 18px;
+    }
+    .rule {
+      width: 96px;
+      height: 6px;
+      background: #c4552a;
+      border-radius: 3px;
+      margin: 8px 0 22px;
+    }
+    .close {
+      font-size: 52px;
+      font-weight: 700;
+      letter-spacing: -0.03em;
+      line-height: 1.15;
+      margin: 0;
+    }
+    .drift {
+      font-size: 36px;
+      color: #3e4c51;
+      letter-spacing: -0.02em;
+      margin: 12px 0 0;
+    }
+  </style>
+  <div id="root" data-composition-id="desk" data-width="1920" data-height="1080">
+    <div id="shot-alert" class="shot clip" data-start="0" data-duration="4" data-track-index="2">
+      <div class="phone phone-lg">
+        <span class="side" aria-hidden="true"></span>
+        <div class="screen">
+          <p class="clock">07:19</p>
+          <div class="note">
+            <p id="alert-a" data-var-text="alertA">Worldwide IT outage.</p>
+            <p id="alert-b" data-var-text="alertB">A hostile cyber crisis.</p>
+            <p id="alert-c" class="hot" data-var-text="alertC">Indefinitely.</p>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <div id="shot-why" class="shot clip" data-start="4" data-duration="4" data-track-index="2">
+      <div class="why-row">
+        <div class="phone phone-md">
+          <span class="side" aria-hidden="true"></span>
+          <div class="screen">
+            <p class="clock">07:19</p>
+            <div class="note">
+              <p>Worldwide IT outage.</p>
+              <p>A hostile cyber crisis.</p>
+              <p class="hot">Indefinitely.</p>
+            </div>
+          </div>
+        </div>
+        <h1 id="why-word" class="why-word" data-var-text="why">Why?</h1>
+      </div>
+    </div>
+
+    <div id="shot-reports" class="shot clip" data-start="8" data-duration="6" data-track-index="2">
+      <div class="printer">
+        <div class="phone phone-sm">
+          <span class="side" aria-hidden="true"></span>
+          <div class="screen">
+            <p class="clock">07:19</p>
+            <p class="echo">Indefinitely.</p>
+          </div>
+          <div class="slot" aria-hidden="true"></div>
+        </div>
+        <div class="receipt">
+          <div class="row">
+            <span class="thread" aria-hidden="true"></span>
+            <div>
+              <p class="when">2021</p>
+              <p class="what" data-var-text="line1">Kernel telemetry moves into the system</p>
+            </div>
+          </div>
+          <div class="row">
+            <span class="thread" aria-hidden="true"></span>
+            <div>
+              <p class="when">2023</p>
+              <p class="what" data-var-text="line2">New rules, no new signed program</p>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <div id="shot-file" class="shot clip" data-start="14" data-duration="6" data-track-index="2">
+      <div class="printer">
+        <div class="phone phone-sm">
+          <span class="side" aria-hidden="true"></span>
+          <div class="screen">
+            <p class="clock">07:19</p>
+            <p class="echo">Indefinitely.</p>
+          </div>
+          <div class="slot" aria-hidden="true"></div>
+        </div>
+        <div class="receipt">
+          <div class="row quiet">
+            <span class="thread" aria-hidden="true"></span>
+            <div>
+              <p class="when">2021</p>
+              <p class="what">Kernel telemetry moves into the system</p>
+            </div>
+          </div>
+          <div class="row quiet">
+            <span class="thread" aria-hidden="true"></span>
+            <div>
+              <p class="when">2023</p>
+              <p class="what">New rules, no new signed program</p>
+            </div>
+          </div>
+          <div class="row live">
+            <span class="thread" aria-hidden="true"></span>
+            <div>
+              <p class="when">04:09</p>
+              <p class="what" data-var-text="line3">Channel File 291 goes out</p>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <div id="shot-joins" class="shot clip" data-start="20" data-duration="5" data-track-index="2">
+      <div class="printer">
+        <div class="phone phone-sm">
+          <span class="side" aria-hidden="true"></span>
+          <div class="screen">
+            <p class="clock">07:19</p>
+            <p class="echo">Indefinitely.</p>
+          </div>
+          <div class="slot" aria-hidden="true"></div>
+        </div>
+        <div class="receipt">
+          <div class="row quiet">
+            <span class="thread" aria-hidden="true"></span>
+            <div>
+              <p class="when">2021</p>
+              <p class="what">Kernel telemetry moves into the system</p>
+            </div>
+          </div>
+          <div class="row quiet">
+            <span class="thread" aria-hidden="true"></span>
+            <div>
+              <p class="when">2023</p>
+              <p class="what">New rules, no new signed program</p>
+            </div>
+          </div>
+          <div class="row quiet">
+            <span class="thread" aria-hidden="true"></span>
+            <div>
+              <p class="when">04:09</p>
+              <p class="what">Channel File 291 goes out</p>
+            </div>
+          </div>
+          <div class="row live">
+            <span class="thread" aria-hidden="true"></span>
+            <div>
+              <p class="when">Today</p>
+              <p class="what" data-var-text="line4">The headline calls it an attack</p>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <div id="shot-name" class="shot clip" data-start="25" data-duration="5" data-track-index="2">
+      <div class="printer">
+        <div class="phone phone-sm">
+          <span class="side" aria-hidden="true"></span>
+          <div class="screen">
+            <p class="clock">07:19</p>
+            <p class="echo">Indefinitely.</p>
+          </div>
+          <div class="slot" aria-hidden="true"></div>
+        </div>
+        <div class="receipt">
+          <p id="brand" class="brand" data-var-text="brand">PlaceWire</p>
+          <div class="rule" aria-hidden="true"></div>
+          <div class="row quiet">
+            <span class="thread" aria-hidden="true"></span>
+            <div>
+              <p class="when">2021</p>
+              <p class="what">Kernel telemetry moves into the system</p>
+            </div>
+          </div>
+          <div class="row quiet">
+            <span class="thread" aria-hidden="true"></span>
+            <div>
+              <p class="when">2023</p>
+              <p class="what">New rules, no new signed program</p>
+            </div>
+          </div>
+          <div class="row quiet">
+            <span class="thread" aria-hidden="true"></span>
+            <div>
+              <p class="when">04:09</p>
+              <p class="what">Channel File 291 goes out</p>
+            </div>
+          </div>
+          <div class="row">
+            <span class="thread" aria-hidden="true"></span>
+            <div>
+              <p class="when">Today</p>
+              <p class="what">The headline calls it an attack</p>
+            </div>
+          </div>
+          <p class="close" data-var-text="close">The trail ends at a file update.</p>
+          <p class="drift" data-var-text="drift">The headline called it an attack.</p>
+        </div>
+      </div>
+    </div>
+  </div>
+  <script>
+    const tl = gsap.timeline({ paused: true });
+    window.__timelines["desk"] = tl;
+  </script>
+</template>

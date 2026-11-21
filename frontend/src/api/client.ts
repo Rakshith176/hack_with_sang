@@ -32,13 +32,25 @@ export async function fetchStoriesCatalog(): Promise<StoryCatalogItem[]> {
   return res.json();
 }
 
+export interface ArticleBlock {
+  kind: "paragraph" | "image" | string;
+  text: string;
+  url: string;
+}
+
+export async function fetchArticle(url: string): Promise<{ url: string; blocks: ArticleBlock[]; limited?: boolean }> {
+  const res = await fetch(`${API_BASE}/api/story/article?url=${encodeURIComponent(url)}`);
+  if (!res.ok) throw new Error('The article did not load.');
+  return res.json();
+}
+
 export async function fetchTrendingNews(topic: string = 'technology OR business'): Promise<TrendingNewsItem[]> {
   const res = await fetch(`${API_BASE}/api/story/trending?q=${encodeURIComponent(topic)}`);
   if (!res.ok) throw new Error('Failed to fetch trending news from SerpApi');
   return res.json();
 }
 
-export async function analyzeLiveHeadline(item: { title: string; snippet?: string; link?: string; source?: string }): Promise<StoryGraph> {
+export async function analyzeLiveHeadline(item: { title: string; snippet?: string; link?: string; source?: string; date?: string }): Promise<StoryGraph> {
   const res = await fetch(`${API_BASE}/api/story/analyze`, {
     method: 'POST',
     headers: { 'Content-Type': 'application/json' },

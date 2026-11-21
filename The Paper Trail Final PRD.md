@@ -1,7 +1,7 @@
-# PlaceWire: Systemic Epistemic Knowledge Graph
+# The Paper Trail: Systemic Epistemic Knowledge Graph
 ### Final Product Requirements Document (Buildathon Edition)
 
-**Project Name:** PlaceWire (Codename: *VeritasMesh*)  
+**Project Name:** The Paper Trail (Codename: *VeritasMesh*)  
 **Tracks Targeted:** Track 1 (Best Use of SerpApi) & Track 2 (You.com: Live Cited Web Data)  
 **Target Delivery:** 24-Hour Hackathon Functional Prototype + Polished Demo  
 
@@ -9,10 +9,10 @@
 
 ## 1. Executive Summary
 
-PlaceWire transforms breaking news and viral claims from a noisy, unanchored firehose into an **investigative epistemic knowledge graph**. 
+The Paper Trail transforms breaking news and viral claims from a noisy, unanchored firehose into an **investigative epistemic knowledge graph**. 
 
 Traditional news readers and AI search engines answer: *"What happened?"*  
-**PlaceWire answers the three questions that actually matter:**
+**The Paper Trail answers the three questions that actually matter:**
 1. **Lineage (The Past):** *"How did we get here, and what was the actual legal, technical, or civic origin?"*
 2. **Drift (The Mutation):** *"How did the headline play the 'Telephone Game'—dropping hedge words or exaggerating metrics compared to the primary record?"*
 3. **Systemic Ripple (The Future & Exposure):** *"If this claim is real, who and what is actually exposed across operational dependencies, regulatory dominoes, and physical infrastructure?"*
@@ -36,7 +36,7 @@ Traditional news readers and AI search engines answer: *"What happened?"*
 
 ## 3. Product Architecture: The "Two-Gear" Model
 
-To guarantee both **100% demo stability on stage** and **undeniable live agentic intelligence**, PlaceWire runs on a dual-gear architecture:
+To guarantee both **100% demo stability on stage** and **undeniable live agentic intelligence**, The Paper Trail runs on a dual-gear architecture:
 
 ```
 ┌─────────────────────────────────────────────────────────────────────────────────┐
@@ -80,7 +80,7 @@ To guarantee both **100% demo stability on stage** and **undeniable live agentic
 * **Quantitative Drift Index:** Computes a score based on removed hedges, metric deviation, and source degrees of separation.
 
 ### Pillar 3: The Systemic Ripple Graph (Second-Order Consequences)
-Rather than a basic geographic pin, PlaceWire models downstream impact across three explicit exposure dimensions:
+Rather than a basic geographic pin, The Paper Trail models downstream impact across three explicit exposure dimensions:
 1. **Operational / Tech Dependencies:** Upstream vendors, downstream software packages, supply-chain bottlenecks.
 2. **Regulatory & Market Dominoes:** Compliance triggers, competitor gains/losses, legal liability risks.
 3. **Physical & Geographic Footprint (When Applicable):** Affected ports, facilities, transit lines, or municipal boundaries.
@@ -218,17 +218,17 @@ To guarantee a memorable pitch, the prototype features a high-stakes, multi-face
 ## 9. 2.5-Minute Pitch Script for Judges
 
 * **0:00 - 0:35 | The Hook & Status Quo:**  
-  *"Judges, every day we make crucial decisions based on breaking headlines. But today's news feeds lie in three distinct ways: they erase history, they play the 'Telephone Game' by sensationalizing claims, and they fail to show second-order consequences. This is PlaceWire."*
+  *"Judges, every day we make crucial decisions based on breaking headlines. But today's news feeds lie in three distinct ways: they erase history, they play the 'Telephone Game' by sensationalizing claims, and they fail to show second-order consequences. This is The Paper Trail."*
 * **0:35 - 1:15 | The Lineage Spine (SerpApi):**  
   *"We take this headline claiming a massive cyber crisis. Instead of just summarizing it, our agent used SerpApi to trace the paper trail backward. Look at Node -2: this wasn't a sudden attack; it traces back to an unvalidated configuration file deployed four hours earlier following a compliance update."*
 * **1:15 - 1:45 | The Drift Inspector:**  
   *"Now look at our Claim Drift view. On the left is the raw engineer release extracted via SerpApi Extract API. On the right are the viral headlines. Notice how 'potential memory read anomaly' mutated into 'catastrophic hostile assault'—our engine automatically flags the dropped hedges and exaggerated metrics."*
 * **1:45 - 2:15 | The Systemic Ripple Graph:**  
-  *"What does this actually touch? Rather than just pinning a pin on a map, PlaceWire builds the systemic ripple graph: software dependencies in red, market dominoes in yellow, and physical airport groundings in blue."*
+  *"What does this actually touch? Rather than just pinning a pin on a map, The Paper Trail builds the systemic ripple graph: software dependencies in red, market dominoes in yellow, and physical airport groundings in blue."*
 * **2:15 - 2:40 | Live Interrogation (You.com):**  
   *"You might ask: 'Is this claim still contested right now?' I click [Challenge Claim]. In real-time, our agent queries You.com's live cited web index and brings back an official vendor statement posted just 30 minutes ago."*
 * **2:40 - 2:50 | The Closing Punchline:**  
-  *"PlaceWire makes information accountable. Every headline arrives with its lineage, its drift, and its consequences. Thank you."*
+  *"The Paper Trail makes information accountable. Every headline arrives with its lineage, its drift, and its consequences. Thank you."*
 
 ---
 

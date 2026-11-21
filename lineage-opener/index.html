@@ -1,0 +1,81 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=1920, height=1080" />
+    <title>The Paper Trail</title>
+    <script src="https://cdn.jsdelivr.net/npm/gsap@3.15.0/dist/gsap.min.js"></script>
+    <style>
+      * { margin: 0; padding: 0; box-sizing: border-box; }
+      html, body {
+        width: 1920px;
+        height: 1080px;
+        overflow: hidden;
+        background: #f4f7f8;
+      }
+      #root { position: relative; width: 1920px; height: 1080px; }
+      .mover { position: absolute; inset: 0; }
+    </style>
+  </head>
+  <body>
+    <div
+      id="root"
+      data-composition-id="main"
+      data-start="0"
+      data-duration="30"
+      data-width="1920"
+      data-height="1080"
+    >
+      <div id="hook-move" class="mover">
+        <div
+          id="split-flap-board"
+          data-composition-id="split-flap-board"
+          data-composition-src="compositions/split-flap-board.html"
+          data-variable-values='{"boardText":"14 HUBS DOWN","flipDuration":0.06,"cellStagger":0.03,"cellCount":12}'
+          data-start="0"
+          data-duration="4.2"
+          data-track-index="1"
+          data-track-kind="graphics"
+          data-width="1920"
+          data-height="1080"
+        ></div>
+      </div>
+      <div id="ask-move" class="mover">
+        <div
+          id="kinetic-type-swap"
+          data-composition-id="kinetic-type-swap"
+          data-composition-src="compositions/components/kinetic-type-swap.html"
+          data-variable-values='{"prefix":"An","options":"outage,crash,attack","suffix":"?","accent":"green","exit":"up"}'
+          data-start="3.7"
+          data-duration="3.6"
+          data-track-index="2"
+          data-track-kind="graphics"
+          data-width="1920"
+          data-height="1080"
+          style="--fg:#1b2428;--bg:#f4f7f8;--brand:#c4552a;--font-display:Inter,sans-serif"
+        ></div>
+      </div>
+      <div id="trail-move" class="mover">
+        <div
+          id="trail"
+          data-composition-id="trail"
+          data-composition-src="compositions/trail.html"
+          data-start="6.8"
+          data-duration="23.2"
+          data-track-index="3"
+          data-track-kind="graphics"
+          data-width="1920"
+          data-height="1080"
+        ></div>
+      </div>
+    </div>
+    <script>
+      const tl = gsap.timeline({ paused: true });
+      tl.fromTo("#hook-move", { y: 0, filter: "blur(0px)" }, { y: -140, filter: "blur(10px)", duration: 0.28, ease: "power3.in" }, 3.55);
+      tl.fromTo("#ask-move", { y: 120, filter: "blur(10px)" }, { y: 0, filter: "blur(0px)", duration: 0.34, ease: "power3.out" }, 3.7);
+      tl.fromTo("#ask-move", { y: 0, filter: "blur(0px)" }, { y: -160, filter: "blur(10px)", duration: 0.26, ease: "power3.in" }, 6.85);
+      tl.fromTo("#trail-move", { y: 90, filter: "blur(8px)" }, { y: 0, filter: "blur(0px)", duration: 0.36, ease: "power3.out" }, 6.95);
+      window.__timelines["main"] = tl;
+    </script>
+  </body>
+</html>

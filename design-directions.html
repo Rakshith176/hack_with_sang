@@ -1,0 +1,1080 @@
+<title>The Paper Trail Directions</title>
+<meta name="claude:viewport-fit-sides" content="cover">
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Newsreader:ital,opsz,wght@0,6..72,400;0,6..72,500;0,6..72,600;1,6..72,400&family=Courier+Prime:wght@400;700&family=Spline+Sans:wght@400;500;600;700&family=Spline+Sans+Mono:wght@400;500&family=Bricolage+Grotesque:opsz,wght@12..96,400;12..96,600;12..96,700&family=Source+Serif+4:opsz,wght@8..60,400;8..60,600&display=swap">
+<style>
+:root{
+  --shell-bg:#F2F2EF; --shell-fg:#171A1B; --shell-muted:#5D6462;
+  --shell-line:#D3D4CF; --shell-card:#FBFBF8; --shell-ink:#1F3A5F;
+  color-scheme: light;
+}
+@media (prefers-color-scheme: dark){
+  :root:not([data-theme="light"]){
+    --shell-bg:#131516; --shell-fg:#EDEDE8; --shell-muted:#9BA1A0;
+    --shell-line:#2B2F30; --shell-card:#1A1D1E; --shell-ink:#93B2DE;
+    color-scheme: dark;
+  }
+}
+:root[data-theme="dark"]{
+  --shell-bg:#131516; --shell-fg:#EDEDE8; --shell-muted:#9BA1A0;
+  --shell-line:#2B2F30; --shell-card:#1A1D1E; --shell-ink:#93B2DE;
+  color-scheme: dark;
+}
+*{box-sizing:border-box}
+html,body{margin:0}
+body{
+  background:var(--shell-bg); color:var(--shell-fg);
+  font-family:"Source Serif 4",Georgia,serif;
+  padding-left:max(16px,env(safe-area-inset-left,0px));
+  padding-right:max(16px,env(safe-area-inset-right,0px));
+  padding-block:0 4rem;
+  -webkit-font-smoothing:antialiased;
+}
+.wrap{max-width:1240px;margin:0 auto}
+.page-head{padding-block:2.75rem 1.5rem;border-bottom:1px solid var(--shell-line);display:grid;gap:.9rem}
+.wordmark{font-family:"Bricolage Grotesque",system-ui,sans-serif;font-weight:600;font-size:.95rem}
+h1{font-family:"Newsreader",Georgia,serif;font-weight:500;font-size:clamp(1.9rem,4vw,2.9rem);line-height:1.08;margin:0;max-width:23ch;text-wrap:balance;letter-spacing:-.015em}
+.lede{max-width:64ch;line-height:1.6;color:var(--shell-muted);margin:0;font-size:1rem}
+.lede b{color:var(--shell-fg);font-weight:600}
+.pick-note{margin-top:1.25rem;padding:.8rem 1rem;border:1px solid var(--shell-line);border-left:3px solid var(--shell-ink);background:var(--shell-card);font-family:"Spline Sans",system-ui,sans-serif;font-size:.85rem;line-height:1.5}
+.pick-note[hidden]{display:none}
+
+.dir{padding-block:2.75rem;border-bottom:1px solid var(--shell-line);display:grid;grid-template-columns:280px minmax(0,1fr);gap:2rem;align-items:start;scroll-margin-top:1rem}
+.dir:last-of-type{border-bottom:0}
+.dir.chosen .frame{outline:2px solid var(--shell-ink);outline-offset:4px}
+.brief{position:sticky;top:1.25rem;display:grid;gap:1rem;font-family:"Spline Sans",system-ui,sans-serif}
+.letter{font-family:"Newsreader",Georgia,serif;font-size:3.4rem;line-height:.8;color:var(--shell-muted)}
+.brief h2{margin:0;font-family:"Bricolage Grotesque",system-ui,sans-serif;font-size:1.55rem;font-weight:600;letter-spacing:-.01em}
+.thesis{margin:0;font-family:"Source Serif 4",Georgia,serif;font-size:.97rem;line-height:1.62}
+.specs{margin:0;display:grid;gap:.55rem;font-size:.8rem;line-height:1.5}
+.specs div{display:grid;grid-template-columns:54px 1fr;gap:.6rem}
+.specs dt{color:var(--shell-muted)}
+.specs dd{margin:0}
+.chips{display:flex;gap:6px;flex-wrap:wrap}
+.chip{width:18px;height:18px;border-radius:2px;border:1px solid rgba(0,0,0,.14)}
+.pick{justify-self:start;font:inherit;font-size:.8rem;font-weight:600;cursor:pointer;padding:.6rem .95rem;border:1px solid var(--shell-line);background:var(--shell-card);color:var(--shell-fg);border-radius:2px}
+.pick:hover{border-color:var(--shell-ink);color:var(--shell-ink)}
+.pick:focus-visible{outline:2px solid var(--shell-ink);outline-offset:2px}
+
+.frame{border:1px solid var(--shell-line);border-radius:3px;overflow:hidden;box-shadow:0 18px 40px -28px rgba(0,0,0,.35)}
+.chrome{display:flex;align-items:center;justify-content:space-between;gap:1rem;flex-wrap:wrap;padding:.7rem .9rem;font-family:"Spline Sans",system-ui,sans-serif}
+.tabs{display:flex;gap:.15rem;flex-wrap:wrap}
+.tabs button{font:inherit;font-size:.76rem;cursor:pointer;padding:.34rem .62rem;border:0;background:transparent;border-radius:2px}
+.tabs button:focus-visible{outline:2px solid currentColor;outline-offset:2px}
+.frame .body{min-height:520px}
+
+/* A — DOCKET */
+.d-a{--bg:#EAEDE9;--panel:#F1F4F0;--ink:#141B1D;--muted:#5D6A66;--rule:#C2CBC5;--stamp:#A5362B;--seal:#2A6A57;--display:"Newsreader",Georgia,serif;--mono:"Courier Prime","Courier New",monospace}
+.d-a .frame{background:var(--bg);color:var(--ink);border-color:#BFC7C1}
+.d-a .chrome{background:var(--panel);border-bottom:1px solid var(--rule)}
+.d-a .brand{font-family:var(--display);font-size:1rem;font-weight:600}
+.d-a .chrome-meta{font-family:var(--mono);font-size:.72rem;color:var(--muted)}
+.d-a .tabs button{color:var(--muted);border-bottom:2px solid transparent;border-radius:0}
+.d-a .tabs button[aria-selected="true"]{color:var(--ink);border-bottom-color:var(--stamp)}
+.d-a .tabs button:hover{color:var(--ink)}
+.d-a .body{padding:1.4rem 1.5rem 1.8rem}
+
+.a-sheethead{display:flex;align-items:baseline;justify-content:space-between;gap:1rem;padding-bottom:.7rem;border-bottom:2px solid var(--ink)}
+.a-sheethead h3{margin:0;font-family:var(--display);font-size:1.5rem;font-weight:500}
+.a-sheethead span{font-family:var(--mono);font-size:.72rem;color:var(--muted)}
+.a-rows{list-style:none;margin:0;padding:0}
+.a-row{width:100%;text-align:left;display:grid;grid-template-columns:74px minmax(0,1fr) auto;gap:1rem;align-items:start;font:inherit;color:inherit;background:transparent;border:0;border-bottom:1px solid var(--rule);padding:1rem .4rem;cursor:pointer}
+.a-row:hover{background:rgba(20,27,29,.035)}
+.a-row:focus-visible{outline:2px solid var(--stamp);outline-offset:-2px}
+.a-when{font-family:var(--mono);font-size:.72rem;line-height:1.5;color:var(--muted);padding-top:.2rem}
+.a-when b{display:block;color:var(--ink);font-weight:700}
+.a-rtitle{display:block;font-family:var(--display);font-size:1.3rem;line-height:1.22;font-weight:500;max-width:38ch}
+.a-rmeta{display:block;margin-top:.3rem;font-family:var(--mono);font-size:.72rem;color:var(--muted)}
+.a-stamp{align-self:center;font-family:var(--mono);font-size:.66rem;letter-spacing:.06em;text-transform:uppercase;padding:.28rem .5rem;border:1px solid currentColor;transform:rotate(-1.4deg);white-space:nowrap}
+.a-stamp.contested{color:var(--stamp)}
+.a-stamp.corroborated{color:var(--muted)}
+.a-stamp.primary{color:var(--seal)}
+
+.a-dochead{display:grid;gap:.4rem;padding-bottom:.9rem;border-bottom:2px solid var(--ink);margin-bottom:1.4rem}
+.a-dochead h3{margin:0;font-family:var(--display);font-size:1.55rem;line-height:1.2;font-weight:500;max-width:44ch;text-wrap:balance}
+.a-docmeta{font-family:var(--mono);font-size:.72rem;color:var(--muted)}
+.a-trail{list-style:none;margin:0;padding:0 0 0 1.4rem;position:relative}
+.a-trail::before{content:"";position:absolute;left:0;top:.6rem;bottom:2rem;width:1px;background:var(--stamp);opacity:.55}
+.a-entry{position:relative;padding-bottom:1.1rem}
+.a-entry::before{content:"";position:absolute;left:-1.4rem;top:.95rem;width:1.4rem;height:1px;background:var(--stamp);opacity:.55}
+.a-entry::after{content:"";position:absolute;left:calc(-1.4rem - 3px);top:calc(.95rem - 3px);width:7px;height:7px;border-radius:50%;background:var(--stamp)}
+.a-card{border:1px solid var(--rule);background:var(--panel);padding:.9rem 1rem}
+.a-kicker{font-family:var(--mono);font-size:.7rem;color:var(--muted);margin-bottom:.3rem}
+.a-card h4{margin:0 0 .35rem;font-family:var(--display);font-size:1.12rem;line-height:1.25;font-weight:500}
+.a-card p{margin:0 0 .6rem;font-size:.86rem;line-height:1.55;max-width:58ch}
+.a-card blockquote{margin:0;padding:.55rem .7rem;background:var(--bg);border-left:2px solid var(--seal);font-family:var(--mono);font-size:.76rem;line-height:1.55}
+.a-src{margin-top:.55rem;font-family:var(--mono);font-size:.72rem}
+.a-src a{color:var(--ink);text-decoration:none;border-bottom:1px solid var(--seal)}
+.a-src a:hover{color:var(--seal)}
+.a-card.is-focus{border-color:var(--ink);background:var(--ink);color:#EDEFEA}
+.a-card.is-focus .a-kicker{color:#A9B5AF}
+.a-card.is-focus blockquote{background:rgba(255,255,255,.07);border-left-color:#D6A79F;color:#EDEFEA}
+.a-card.is-focus .a-src a{color:#EDEFEA;border-bottom-color:#D6A79F}
+.a-entry.is-focus::after{background:var(--ink);width:9px;height:9px;left:calc(-1.4rem - 4px);top:calc(.95rem - 4px)}
+.a-bridge{margin:.1rem 0 .9rem;display:flex;flex-wrap:wrap;align-items:baseline;gap:.5rem;font-size:.76rem}
+.a-bridge span{font-family:var(--mono);color:var(--stamp);text-transform:uppercase;font-size:.66rem;letter-spacing:.04em}
+.a-bridge em{font-family:var(--display);font-style:italic;color:var(--muted);max-width:52ch}
+.a-bridge b{font-family:var(--mono);font-weight:400;color:var(--muted)}
+
+.a-rl{border:1px solid var(--rule);background:var(--panel);margin-bottom:1.2rem}
+.a-rlhead{display:flex;justify-content:space-between;gap:1rem;align-items:baseline;padding:.7rem .9rem;border-bottom:1px solid var(--rule)}
+.a-rlhead h3{margin:0;font-family:var(--display);font-size:1.05rem;font-weight:500}
+.a-rlhead span{font-family:var(--mono);font-size:.7rem;color:var(--stamp)}
+.a-rlbody{display:grid;grid-template-columns:1fr 1fr}
+.a-rlside{padding:.9rem 1rem}
+.a-rlside + .a-rlside{border-left:1px solid var(--rule)}
+.a-rllabel{font-family:var(--mono);font-size:.68rem;color:var(--muted);margin-bottom:.45rem}
+.a-rlside p{margin:0;font-family:var(--mono);font-size:.78rem;line-height:1.65}
+.a-rlside.reported mark{background:none;color:var(--stamp);border-bottom:2px solid var(--stamp);padding-bottom:1px}
+.a-quals{margin:.7rem 0 0;padding:0;list-style:none;display:grid;gap:.3rem}
+.a-quals li{font-family:var(--mono);font-size:.7rem;color:var(--seal);border-bottom:1px dotted var(--rule);padding-bottom:.25rem}
+.a-quals li::before{content:"kept · "}
+.a-note{padding:.7rem .9rem;background:var(--bg);border-top:1px solid var(--rule);font-size:.82rem;line-height:1.55}
+.a-note b{font-family:var(--mono);font-size:.7rem;color:var(--stamp);font-weight:700;margin-right:.4rem}
+
+.a-sched{border:1px solid var(--rule);background:var(--panel);overflow-x:auto}
+.a-schedhead{display:flex;justify-content:space-between;gap:1rem;align-items:baseline;padding:.75rem .9rem;border-bottom:1px solid var(--rule)}
+.a-schedhead h3{margin:0;font-family:var(--display);font-size:1.1rem;font-weight:500}
+.a-schedhead span{font-family:var(--mono);font-size:.7rem;color:var(--muted)}
+.a-sched table{width:100%;border-collapse:collapse;font-size:.8rem;min-width:560px}
+.a-sched th{text-align:left;font-family:var(--mono);font-size:.66rem;color:var(--muted);font-weight:400;padding:.5rem .9rem;border-bottom:1px solid var(--rule)}
+.a-sched td{padding:.7rem .9rem;border-bottom:1px solid var(--rule);vertical-align:top;line-height:1.45}
+.a-sched tr:last-child td{border-bottom:0}
+.a-sched td.hop{font-family:var(--mono);color:var(--stamp);white-space:nowrap}
+.a-sched td.dim{font-family:var(--display);font-size:.95rem;white-space:nowrap}
+.a-sched td.ev{color:var(--muted);font-size:.75rem}
+.a-sched td.ev a{color:var(--muted);text-decoration:none;border-bottom:1px solid var(--rule)}
+
+/* B — SWITCHBOARD */
+.d-b{--bg:#16252C;--panel:#1D3038;--panel-2:#22363F;--ink:#EFE8DA;--muted:#9DB0B2;--cable:#3E5A63;--amber:#ECB05C;--coral:#EF7B63;--sage:#8FC0AC;--lilac:#B6A8DE;--ui:"Spline Sans",system-ui,sans-serif;--mono:"Spline Sans Mono",ui-monospace,monospace}
+.d-b .frame{background:var(--bg);color:var(--ink);border-color:#2A4149}
+.d-b .chrome{background:var(--panel);border-bottom:1px solid var(--cable)}
+.d-b .brand{font-family:var(--ui);font-weight:700;font-size:.95rem}
+.d-b .brand i{color:var(--amber);font-style:normal}
+.d-b .chrome-meta{font-family:var(--mono);font-size:.72rem;color:var(--muted)}
+.d-b .tabs{background:var(--bg);padding:2px;border:1px solid var(--cable);border-radius:2px}
+.d-b .tabs button{color:var(--muted);font-family:var(--ui)}
+.d-b .tabs button[aria-selected="true"]{background:var(--amber);color:#18262C;font-weight:600}
+.d-b .tabs button:hover{color:var(--ink)}
+.d-b .tabs button[aria-selected="true"]:hover{color:#18262C}
+.d-b .body{padding:1.3rem 1.4rem 1.7rem}
+
+.b-feed{display:grid;gap:.6rem}
+.b-feedbar{display:flex;justify-content:space-between;align-items:baseline;font-family:var(--mono);font-size:.72rem;color:var(--muted);padding-bottom:.4rem;border-bottom:1px solid var(--cable)}
+.b-rows{display:grid;gap:.5rem;list-style:none;margin:0;padding:0}
+.b-item{display:grid;grid-template-columns:12px minmax(0,1fr) auto;gap:.9rem;align-items:center;background:var(--panel);border:1px solid var(--cable);border-left-width:3px;padding:.8rem .95rem;text-align:left;font:inherit;color:inherit;cursor:pointer}
+.b-item:hover{background:var(--panel-2);border-color:#51727C}
+.b-item:focus-visible{outline:2px solid var(--amber);outline-offset:2px}
+.b-item.live{border-left-color:var(--amber);background:#1B2C33}
+.b-lamp{width:9px;height:9px;border-radius:50%;box-shadow:0 0 0 3px rgba(255,255,255,.05)}
+.b-lamp.ok{background:var(--sage)}
+.b-lamp.warn{background:var(--coral)}
+.b-lamp.new{background:var(--amber)}
+.b-htitle{font-family:var(--ui);font-size:.98rem;font-weight:600;line-height:1.3;max-width:52ch}
+.b-hmeta{font-family:var(--mono);font-size:.7rem;color:var(--muted);margin-top:.25rem}
+.b-trace{font-family:var(--ui);font-size:.74rem;font-weight:600;color:var(--amber);background:transparent;border:1px solid var(--cable);padding:.4rem .65rem;white-space:nowrap}
+.b-item:hover .b-trace{border-color:var(--amber)}
+
+.b-head{display:grid;gap:.3rem;padding-bottom:.8rem;border-bottom:1px solid var(--cable);margin-bottom:1rem}
+.b-focusline{font-family:var(--ui);font-size:1.15rem;font-weight:600;line-height:1.3;max-width:56ch}
+.b-outlet{font-family:var(--mono);font-size:.72rem;color:var(--muted)}
+.b-lane{display:grid;grid-template-columns:86px minmax(0,1fr);gap:.8rem;align-items:center;margin-bottom:.7rem}
+.b-lanelabel{font-family:var(--mono);font-size:.7rem;color:var(--muted);text-align:right}
+.b-run{display:flex;align-items:center;min-width:0;overflow-x:auto;padding:.35rem 0}
+.b-station{flex:0 0 auto;font:inherit;color:inherit;text-align:left;cursor:pointer;background:var(--panel);border:1px solid var(--cable);padding:.55rem .7rem;min-width:132px;max-width:186px}
+.b-station:hover{border-color:#5C7E88;background:var(--panel-2)}
+.b-station:focus-visible{outline:2px solid var(--amber);outline-offset:2px}
+.b-station.on{border-color:var(--amber)}
+.b-station .t{display:block;font-family:var(--ui);font-size:.8rem;font-weight:600;line-height:1.3}
+.b-station .w{display:block;font-family:var(--mono);font-size:.66rem;color:var(--muted);margin-top:.2rem}
+.b-cable{flex:1 1 28px;min-width:26px;height:2px;background:var(--cable);position:relative;margin:0 2px}
+.b-cable::after{content:attr(data-rel);position:absolute;left:50%;transform:translateX(-50%);bottom:6px;font-family:var(--mono);font-size:.6rem;color:var(--muted);white-space:nowrap}
+.b-junction{display:block;width:100%;height:44px;margin:-.2rem 0 -.4rem}
+.b-focusrow{display:flex;justify-content:flex-end}
+.b-focuschip{background:var(--panel-2);border:1px solid var(--amber);padding:.6rem .85rem;max-width:340px}
+.b-focuschip .t{font-family:var(--ui);font-size:.88rem;font-weight:600;line-height:1.3;display:block}
+.b-focuschip .w{font-family:var(--mono);font-size:.66rem;color:var(--coral);margin-top:.2rem;display:block}
+.b-detail{margin-top:1rem;border:1px solid var(--cable);background:var(--panel);padding:.95rem 1rem;display:grid;gap:.55rem}
+.b-detail .d-top{display:flex;justify-content:space-between;gap:1rem;align-items:baseline;flex-wrap:wrap}
+.b-detail h4{margin:0;font-family:var(--ui);font-size:1rem;font-weight:600}
+.b-detail .d-when{font-family:var(--mono);font-size:.7rem;color:var(--muted)}
+.b-detail p{margin:0;font-size:.86rem;line-height:1.55;color:#DCD6C8;max-width:64ch}
+.b-detail blockquote{margin:0;padding:.6rem .75rem;background:var(--bg);border-left:2px solid var(--sage);font-family:var(--mono);font-size:.76rem;line-height:1.6;color:#DCD6C8}
+.b-detail .d-foot{display:flex;justify-content:space-between;align-items:center;gap:1rem;flex-wrap:wrap;font-family:var(--mono);font-size:.72rem}
+.b-detail a{color:var(--sage);text-decoration:none;border-bottom:1px solid var(--cable)}
+
+.b-drec{border:1px solid var(--cable);background:var(--panel);margin-bottom:1rem}
+.b-dhead{display:flex;justify-content:space-between;gap:1rem;align-items:baseline;padding:.7rem .9rem;border-bottom:1px solid var(--cable);flex-wrap:wrap}
+.b-dhead h3{margin:0;font-family:var(--ui);font-size:.95rem;font-weight:600}
+.b-dhead span{font-family:var(--mono);font-size:.7rem;color:var(--coral)}
+.b-trackrow{display:grid;grid-template-columns:64px minmax(0,1fr);gap:.8rem;align-items:start;padding:.8rem .9rem;border-bottom:1px solid var(--cable)}
+.b-trackrow:last-of-type{border-bottom:0}
+.b-tracklabel{font-family:var(--mono);font-size:.66rem;color:var(--muted);padding-top:.15rem}
+.b-claim{margin:0;font-size:.88rem;line-height:1.6;color:#DCD6C8;max-width:66ch}
+.b-claim mark{background:rgba(239,123,99,.16);color:var(--coral);border-bottom:1px solid var(--coral);padding:0 1px}
+.b-dropped{margin:.45rem 0 0;padding:0;list-style:none;display:flex;flex-wrap:wrap;gap:.35rem}
+.b-dropped li{font-family:var(--mono);font-size:.66rem;color:var(--lilac);border:1px solid #4A4562;padding:.1rem .35rem}
+.b-meter{padding:.7rem .9rem;display:grid;gap:.4rem;border-top:1px solid var(--cable)}
+.b-meter .m-top{display:flex;justify-content:space-between;font-family:var(--mono);font-size:.68rem;color:var(--muted)}
+.b-meter .m-top b{color:var(--coral);font-weight:600}
+.b-meterbar{height:6px;background:var(--bg);position:relative;overflow:hidden}
+.b-meterbar i{position:absolute;inset:0 auto 0 0;background:linear-gradient(90deg,var(--amber),var(--coral))}
+.b-dnote{padding:.6rem .9rem;background:var(--bg);font-size:.82rem;line-height:1.55;color:#DCD6C8}
+
+.b-ripple{display:grid;grid-template-columns:minmax(0,1.15fr) minmax(0,1fr);gap:1.2rem;align-items:start}
+.b-map{border:1px solid var(--cable);background:var(--panel);padding:.4rem}
+.b-map svg{display:block;width:100%;height:auto}
+.b-map .mlegend{display:flex;gap:1rem;flex-wrap:wrap;font-family:var(--mono);font-size:.64rem;color:var(--muted);padding:.4rem .5rem .3rem}
+.b-map .mlegend i{display:inline-block;width:16px;border-top:2px solid var(--cable);vertical-align:middle;margin-right:.3rem}
+.b-map .mlegend i.dash{border-top-style:dashed}
+.b-list{display:grid;gap:.5rem;list-style:none;margin:0;padding:0}
+.b-exp{border:1px solid var(--cable);background:var(--panel);padding:.7rem .8rem;display:grid;grid-template-columns:22px minmax(0,1fr);gap:.6rem}
+.b-exp .n{width:20px;height:20px;border-radius:50%;display:grid;place-items:center;font-family:var(--mono);font-size:.68rem;color:#18262C;background:var(--amber);margin-top:.1rem}
+.b-exp .n.lv2{background:transparent;color:var(--amber);border:1px dashed var(--amber)}
+.b-exp h4{margin:0 0 .15rem;font-family:var(--ui);font-size:.82rem;font-weight:600;line-height:1.3}
+.b-exp p{margin:0;font-family:var(--mono);font-size:.68rem;color:var(--muted);line-height:1.5}
+
+/* C — TRACE SHEET */
+.d-c{--bg:#DFE6E5;--panel:#E9EEED;--ink:#16242B;--muted:#5A6C6E;--grid:#C6D2D1;--cobalt:#1E4C9A;--ochre:#A8721F;--brick:#A3463A;--teal:#2A6B6A;--display:"Bricolage Grotesque",system-ui,sans-serif;--body:"Source Serif 4",Georgia,serif}
+.d-c .frame{background:var(--bg);color:var(--ink);border-color:#BBC9C9}
+.d-c .chrome{background:var(--panel);border-bottom:1px solid #C2CFCE}
+.d-c .brand{font-family:var(--display);font-weight:700;font-size:.95rem;letter-spacing:-.01em}
+.d-c .chrome-meta{font-family:var(--display);font-size:.7rem;color:var(--muted);font-variant-numeric:tabular-nums}
+.d-c .tabs button{color:var(--muted);font-family:var(--display);font-weight:500;border:1px solid transparent}
+.d-c .tabs button[aria-selected="true"]{background:var(--cobalt);color:#F2F6F5}
+.d-c .tabs button:hover{color:var(--ink);border-color:#C2CFCE}
+.d-c .tabs button[aria-selected="true"]:hover{color:#F2F6F5}
+.d-c .body{padding:1.35rem 1.45rem 1.75rem;background-image:linear-gradient(var(--grid) 1px,transparent 1px),linear-gradient(90deg,var(--grid) 1px,transparent 1px);background-size:24px 24px;background-position:-1px -1px;background-color:var(--bg)}
+
+.c-feedhead{display:flex;justify-content:space-between;align-items:baseline;gap:1rem;margin-bottom:.8rem}
+.c-feedhead h3{margin:0;font-family:var(--display);font-size:1.05rem;font-weight:600}
+.c-feedhead span{font-family:var(--display);font-size:.72rem;color:var(--muted)}
+.c-slips{display:grid;gap:.55rem;list-style:none;margin:0;padding:0}
+.c-slip{display:grid;grid-template-columns:6px 92px minmax(0,1fr) auto;gap:.9rem;align-items:center;background:var(--panel);border:1px solid #C2CFCE;padding:.75rem .9rem .75rem 0;text-align:left;font:inherit;color:inherit;cursor:pointer}
+.c-slip:hover{border-color:var(--cobalt);background:#EEF2F1}
+.c-slip:focus-visible{outline:2px solid var(--cobalt);outline-offset:2px}
+.c-slip .tab{width:6px;align-self:stretch;background:var(--cobalt)}
+.c-slip.warn .tab{background:var(--brick)}
+.c-slip.live .tab{background:var(--ochre)}
+.c-slip time{font-family:var(--display);font-size:.72rem;color:var(--muted);font-variant-numeric:tabular-nums;text-align:right}
+.c-slip .t{font-family:var(--body);font-size:1rem;font-weight:600;line-height:1.3;max-width:46ch}
+.c-slip .s{display:block;font-family:var(--display);font-size:.7rem;color:var(--muted);margin-top:.2rem}
+.c-slip .go{font-family:var(--display);font-size:.72rem;font-weight:600;color:var(--cobalt);white-space:nowrap;padding-right:.9rem}
+
+.c-sheethead{display:grid;gap:.3rem;padding-bottom:.7rem;border-bottom:1.5px solid var(--ink);margin-bottom:1.1rem}
+.c-sheethead h3{margin:0;font-family:var(--display);font-size:1.2rem;font-weight:600;line-height:1.28;max-width:52ch;letter-spacing:-.01em}
+.c-sheethead p{margin:0;font-family:var(--display);font-size:.72rem;color:var(--muted)}
+.c-row{display:grid;grid-template-columns:minmax(0,1fr) 96px minmax(0,1fr);gap:.6rem;align-items:center;min-height:64px}
+.c-node{border:1px solid var(--ink);background:var(--panel);padding:.5rem .6rem;display:grid;gap:.15rem;text-align:left;font:inherit;color:inherit;cursor:pointer;position:relative}
+.c-node:hover{background:#F1F5F4}
+.c-node:focus-visible{outline:2px solid var(--cobalt);outline-offset:2px}
+.c-node .t{font-family:var(--body);font-size:.84rem;font-weight:600;line-height:1.3}
+.c-node .s{font-family:var(--display);font-size:.66rem;color:var(--muted);line-height:1.35}
+.c-node.tech{border-left:4px solid var(--cobalt)}
+.c-node.reg{border-right:4px solid var(--teal);text-align:right}
+.c-node.tech::after{content:"";position:absolute;right:-.62rem;top:50%;width:.6rem;height:1px;background:var(--ink)}
+.c-node.reg::after{content:"";position:absolute;left:-.62rem;top:50%;width:.6rem;height:1px;background:var(--ink)}
+.c-spine{position:relative;display:grid;place-items:center;align-self:stretch;padding:.3rem 0}
+.c-spine::before{content:"";position:absolute;top:0;bottom:0;left:50%;width:1.5px;background:var(--ink);opacity:.4}
+.c-spine time{position:relative;background:var(--bg);font-family:var(--display);font-size:.66rem;color:var(--muted);padding:.18rem .3rem;font-variant-numeric:tabular-nums;white-space:nowrap}
+.c-spine::after{content:"";position:absolute;width:6px;height:6px;border-radius:50%;background:var(--ink);top:50%;transform:translateY(-50%)}
+.c-empty{min-height:64px}
+.c-focusrow{margin-top:.5rem;border:1.5px solid var(--ink);background:var(--ink);color:#EAF0EF;padding:.8rem .9rem;display:grid;gap:.2rem}
+.c-focusrow .fl{font-family:var(--display);font-size:.66rem;color:#9FB4B3}
+.c-focusrow .t{font-family:var(--body);font-size:.98rem;font-weight:600;line-height:1.3}
+.c-focusrow .t a{color:#EAF0EF;text-decoration:none;border-bottom:1px solid #6B8382}
+.c-joins{display:flex;justify-content:center;height:18px}
+.c-joins::before{content:"";width:1.5px;background:var(--ink)}
+
+.c-drec{background:var(--panel);border:1px solid #C2CFCE;padding:1rem;margin-bottom:1rem}
+.c-drec h3{margin:0 0 .7rem;font-family:var(--display);font-size:.98rem;font-weight:600;display:flex;justify-content:space-between;gap:1rem;flex-wrap:wrap}
+.c-drec h3 span{font-family:var(--display);font-size:.72rem;font-weight:500;color:var(--brick)}
+.c-pair{display:grid;grid-template-columns:1fr 1fr;border:1px solid #C2CFCE;background:var(--bg)}
+.c-half{padding:.75rem .85rem}
+.c-half + .c-half{border-left:1px solid #C2CFCE}
+.c-half .lab{font-family:var(--display);font-size:.66rem;color:var(--muted);margin-bottom:.35rem;display:flex;justify-content:space-between;gap:.5rem}
+.c-half .lab b{font-weight:600;color:var(--ink)}
+.c-half p{margin:0;font-family:var(--body);font-size:.86rem;line-height:1.62;max-width:44ch}
+.c-half.rep p mark{background:rgba(168,114,31,.22);color:#6E4A12;padding:0 1px}
+.c-half .hedges{margin:.5rem 0 0;padding:0;list-style:none;display:flex;flex-wrap:wrap;gap:.3rem}
+.c-half .hedges li{font-family:var(--display);font-size:.64rem;color:var(--teal);border:1px solid #A8C4C2;padding:.08rem .3rem}
+.c-rulerwrap{margin-top:.9rem;padding-top:.6rem}
+.c-ruler{position:relative;height:36px;margin:0 14px}
+.c-ruler .line{position:absolute;left:0;right:0;top:14px;height:1.5px;background:var(--ink);opacity:.45}
+.c-ruler .tick{position:absolute;top:10px;width:1px;height:9px;background:var(--ink);opacity:.45}
+.c-ruler .tick span{position:absolute;top:12px;left:50%;transform:translateX(-50%);font-family:var(--display);font-size:.62rem;color:var(--muted)}
+.c-marker{position:absolute;top:0;transform:translateX(-50%);display:grid;justify-items:center;gap:2px}
+.c-marker .m-lab{font-family:var(--display);font-size:.68rem;font-weight:700;color:var(--brick);white-space:nowrap}
+.c-marker .m-pin{width:0;height:0;border-left:5px solid transparent;border-right:5px solid transparent;border-top:8px solid var(--brick)}
+.c-dnote{margin:.7rem 0 0;font-family:var(--body);font-size:.84rem;line-height:1.55;max-width:70ch}
+
+.c-origin{background:var(--ink);color:#EAF0EF;padding:.75rem .85rem;max-width:420px}
+.c-origin .t{font-family:var(--body);font-size:.9rem;font-weight:600;line-height:1.3}
+.c-origin .s{font-family:var(--display);font-size:.66rem;color:#9FB4B3;margin-top:.15rem}
+.c-branches{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:1rem;position:relative;padding-top:22px}
+.c-branches::before{content:"";position:absolute;left:0;right:0;top:0;height:1.5px;background:var(--ink);opacity:.5}
+.c-branch{position:relative;display:grid;gap:.5rem;align-content:start}
+.c-branch::before{content:"";position:absolute;left:0;top:-22px;width:1.5px;height:22px;background:var(--ink);opacity:.5}
+.c-branch:last-child::after{content:"";position:absolute;right:0;top:-22px;width:1.5px;height:22px;background:var(--ink);opacity:.5}
+.c-branch h4{margin:0;font-family:var(--display);font-size:.72rem;font-weight:600;color:var(--muted);padding-top:.2rem}
+.c-exp{border:1px solid var(--ink);background:var(--panel);padding:.55rem .6rem}
+.c-exp .t{font-family:var(--body);font-size:.82rem;font-weight:600;line-height:1.3}
+.c-exp .s{font-family:var(--display);font-size:.64rem;color:var(--muted);margin-top:.2rem;line-height:1.4}
+.c-hop{display:inline-block;font-family:var(--display);font-size:.62rem;font-weight:600;color:var(--brick);border:1px solid var(--brick);padding:0 .25rem;margin-bottom:.3rem}
+
+.c-detail{margin-top:1rem;border:1px solid #C2CFCE;background:var(--panel);padding:.95rem 1rem;display:grid;gap:.55rem}
+.c-detail .d-top{display:flex;justify-content:space-between;gap:1rem;align-items:baseline;flex-wrap:wrap}
+.c-detail h4{margin:0;font-family:var(--body);font-size:1rem;font-weight:600;line-height:1.3}
+.c-detail .d-when{font-family:var(--display);font-size:.7rem;color:var(--muted)}
+.c-detail p{margin:0;font-size:.87rem;line-height:1.55;max-width:64ch}
+.c-detail blockquote{margin:0;padding:.6rem .75rem;background:var(--bg);border-left:2px solid var(--teal);font-family:var(--display);font-size:.8rem;line-height:1.6}
+.c-detail .d-foot{display:flex;justify-content:space-between;align-items:center;gap:1rem;flex-wrap:wrap;font-family:var(--display);font-size:.72rem;color:var(--muted)}
+.c-detail a{color:var(--cobalt);text-decoration:none;border-bottom:1px solid #9DB4D4}
+.trace-note{margin:0 0 1rem;padding:.55rem .75rem;border-left:3px solid currentColor;background:rgba(127,127,127,.09);font-size:.82rem;line-height:1.5;max-width:70ch}
+.trace-note[hidden]{display:none}
+.c-empty-state{padding:2.4rem 1.2rem;text-align:center;display:grid;gap:.5rem;justify-items:center}
+.c-empty-state h3{margin:0;font-family:var(--display);font-size:1.05rem}
+.c-empty-state p{margin:0;max-width:44ch;font-size:.88rem;line-height:1.55;color:var(--muted)}
+.b-empty{padding:2.4rem 1rem;border:1px dashed var(--cable);display:grid;gap:.5rem;justify-items:center;text-align:center}
+.b-empty h3{margin:0;font-family:var(--ui);font-size:1rem;font-weight:600}
+.b-empty p{margin:0;max-width:46ch;font-size:.85rem;line-height:1.55;color:var(--muted)}
+.a-empty{padding:2.4rem 1rem;border:1px dashed var(--rule);text-align:center;display:grid;gap:.5rem}
+.a-empty h3{margin:0;font-family:var(--display);font-size:1.1rem;font-weight:500}
+.a-empty p{margin:0 auto;max-width:44ch;font-size:.86rem;line-height:1.6;color:var(--muted)}
+
+.closing{padding-block:2rem 0;display:grid;gap:.6rem;max-width:70ch}
+.closing h2{margin:0;font-family:"Bricolage Grotesque",system-ui,sans-serif;font-size:1.2rem;font-weight:600}
+.closing p{margin:0;line-height:1.6;color:var(--shell-muted);font-size:.95rem}
+.closing b{color:var(--shell-fg)}
+
+@media (max-width:1000px){
+  .dir{grid-template-columns:1fr;gap:1.4rem}
+  .brief{position:static}
+  .brief .letter{font-size:2.2rem}
+  .b-ripple{grid-template-columns:1fr}
+}
+@media (max-width:640px){
+  .page-head{padding-block:1.8rem 1.2rem}
+  .dir{padding-block:2rem}
+  .d-a .body,.d-b .body,.d-c .body{padding:1rem .85rem 1.2rem}
+  .a-row{grid-template-columns:1fr auto;gap:.5rem 1rem}
+  .a-row .a-when{grid-column:1/-1;display:flex;gap:.5rem;align-items:baseline;padding:0}
+  .a-when b{display:inline}
+  .a-rlbody{grid-template-columns:1fr}
+  .a-rlside + .a-rlside{border-left:0;border-top:1px solid var(--rule)}
+  .b-item{grid-template-columns:12px minmax(0,1fr);gap:.7rem}
+  .b-trace{grid-column:2;justify-self:start}
+  .b-lane{grid-template-columns:1fr;gap:.3rem}
+  .b-lanelabel{text-align:left}
+  .b-focusrow{justify-content:flex-start}
+  .b-trackrow{grid-template-columns:1fr;gap:.3rem}
+  .c-slip{grid-template-columns:6px minmax(0,1fr);gap:.4rem .7rem;padding:.7rem .7rem .7rem 0}
+  .c-slip time{grid-column:2;text-align:left}
+  .c-slip .go{grid-column:2;padding-right:0}
+  .c-row{grid-template-columns:minmax(0,1fr) 62px minmax(0,1fr);gap:.35rem}
+  .c-pair{grid-template-columns:1fr}
+  .c-half + .c-half{border-left:0;border-top:1px solid #C2CFCE}
+  .c-branches{grid-template-columns:1fr;gap:.7rem}
+  .c-branches::before,.c-branch::before,.c-branch:last-child::after{display:none}
+}
+@media (prefers-reduced-motion: reduce){
+  *{animation:none !important;transition:none !important}
+}
+</style>
+
+<div class="wrap">
+  <header class="page-head">
+    <div class="wordmark">The Paper Trail</div>
+    <h1>Three directions for a feed-first forensics tool</h1>
+    <p class="lede">
+      All three open on the news feed and hand off to the same investigation. Each gives it a different material:
+      <b>A</b> a case file, <b>B</b> a signal board, <b>C</b> a plotted trace sheet.
+      Click a headline inside any frame to watch it move into lineage, and use the tabs for drift and ripple.
+    </p>
+  </header>
+
+  <div id="pickNote" class="pick-note" hidden></div>
+
+  <section class="dir d-a" id="dir-a">
+    <aside class="brief">
+      <div class="letter">A</div>
+      <h2>Docket</h2>
+      <p class="thesis">The product reads as a court file. Every headline is a filing, every precedent is an exhibit, every mutation is a tracked change. Paper and stamps replace the dark dashboard.</p>
+      <dl class="specs">
+        <div><dt>Palette</dt><dd class="chips"><span class="chip" style="background:#EAEDE9"></span><span class="chip" style="background:#141B1D"></span><span class="chip" style="background:#A5362B"></span><span class="chip" style="background:#2A6A57"></span></dd></div>
+        <div><dt>Type</dt><dd>Newsreader for the record, Courier Prime for anything quoted from a document.</dd></div>
+        <div><dt>Lineage</dt><dd>A docket history with exhibit labels, and the citing relationship written in the margin between entries.</dd></div>
+        <div><dt>Drift</dt><dd>Tracked changes: dropped qualifiers listed as struck, new claims marked in red.</dd></div>
+        <div><dt>Ripple</dt><dd>An exposure schedule, set like a table attached to a filing.</dd></div>
+      </dl>
+      <button class="pick" data-pick="A">Choose Docket</button>
+    </aside>
+    <div class="frame">
+      <div class="chrome">
+        <span class="brand">The Paper Trail</span>
+        <div class="tabs" role="tablist" data-dir="a">
+          <button role="tab" data-tab="feed">News feed</button>
+          <button role="tab" data-tab="lineage">Lineage</button>
+          <button role="tab" data-tab="drift">Claim drift</button>
+          <button role="tab" data-tab="ripple">Systemic ripple</button>
+        </div>
+        <span class="chrome-meta">19 Jul 2024</span>
+      </div>
+      <div class="body" id="body-a"></div>
+    </div>
+  </section>
+
+  <section class="dir d-b" id="dir-b">
+    <aside class="brief">
+      <div class="letter">B</div>
+      <h2>Switchboard</h2>
+      <p class="thesis">An operations board for a room that never closes. The feed is a signal rack, the lineage is a cable run, and every state shows as a lamp. Dark, but warm: slate and brass rather than black and neon.</p>
+      <dl class="specs">
+        <div><dt>Palette</dt><dd class="chips"><span class="chip" style="background:#16252C"></span><span class="chip" style="background:#ECB05C"></span><span class="chip" style="background:#EF7B63"></span><span class="chip" style="background:#8FC0AC"></span></dd></div>
+        <div><dt>Type</dt><dd>Spline Sans throughout, with the mono cut for figures, times, and relationship labels.</dd></div>
+        <div><dt>Lineage</dt><dd>Two cable runs, technical and regulatory, labelled with the relationship each segment carries, meeting at a junction before the headline.</dd></div>
+        <div><dt>Drift</dt><dd>The claim on two channels, source and wire, with mutated spans lit and a gain meter scoring the distance.</dd></div>
+        <div><dt>Ripple</dt><dd>Concentric rings by hop count. Distance from the centre is the number of steps from the incident.</dd></div>
+      </dl>
+      <button class="pick" data-pick="B">Choose Switchboard</button>
+    </aside>
+    <div class="frame">
+      <div class="chrome">
+        <span class="brand">Place<i>Wire</i></span>
+        <div class="tabs" role="tablist" data-dir="b">
+          <button role="tab" data-tab="feed">News feed</button>
+          <button role="tab" data-tab="lineage">Lineage</button>
+          <button role="tab" data-tab="drift">Claim drift</button>
+          <button role="tab" data-tab="ripple">Systemic ripple</button>
+        </div>
+        <span class="chrome-meta">18:31 UTC</span>
+      </div>
+      <div class="body" id="body-b"></div>
+    </div>
+  </section>
+
+  <section class="dir d-c" id="dir-c">
+    <aside class="brief">
+      <div class="letter">C</div>
+      <h2>Trace sheet</h2>
+      <p class="thesis">A drafting sheet. The lineage is plotted rather than listed: date runs down the spine, technical and regulatory threads sit on either side, and the headline is where they meet. Serif for reading, grotesque for coordinates.</p>
+      <dl class="specs">
+        <div><dt>Palette</dt><dd class="chips"><span class="chip" style="background:#DFE6E5"></span><span class="chip" style="background:#16242B"></span><span class="chip" style="background:#1E4C9A"></span><span class="chip" style="background:#A8721F"></span></dd></div>
+        <div><dt>Type</dt><dd>Bricolage Grotesque for labels and coordinates, Source Serif 4 for prose.</dd></div>
+        <div><dt>Lineage</dt><dd>A time spine with two lanes. Each event sits in its thread at its date, wired to the spine; both lanes join at the headline.</dd></div>
+        <div><dt>Drift</dt><dd>Two texts side by side with the mutation measured on a 0 to 100 ruler.</dd></div>
+        <div><dt>Ripple</dt><dd>A fork: the incident opens three branches, each exposure marked with its hop depth.</dd></div>
+      </dl>
+      <button class="pick" data-pick="C">Choose Trace sheet</button>
+    </aside>
+    <div class="frame">
+      <div class="chrome">
+        <span class="brand">The Paper Trail</span>
+        <div class="tabs" role="tablist" data-dir="c">
+          <button role="tab" data-tab="feed">News feed</button>
+          <button role="tab" data-tab="lineage">Lineage</button>
+          <button role="tab" data-tab="drift">Claim drift</button>
+          <button role="tab" data-tab="ripple">Systemic ripple</button>
+        </div>
+        <span class="chrome-meta">Sheet 04 · 19.07.24</span>
+      </div>
+      <div class="body" id="body-c"></div>
+    </div>
+  </section>
+
+  <footer class="closing">
+    <h2>What stays in all three</h2>
+    <p>The feed is the front door. Every claim keeps its source beside it. Solid and dashed lines mean stated and inferred. Each direction only changes the material, so the build can borrow from more than one of them.</p>
+    <p>Reply with <b>A</b>, <b>B</b>, or <b>C</b> and I'll build the feed, lineage, drift, and ripple in that one. Mixing is fine too, for example <b>B's feed with C's lineage</b>.</p>
+  </footer>
+</div>
+
+<script>
+(function () {
+  "use strict";
+
+  var esc = function (s) {
+    return String(s).replace(/[&<>"']/g, function (c) {
+      return { "&": "&amp;", "<": "&lt;", ">": "&gt;", '"': "&quot;", "'": "&#39;" }[c];
+    });
+  };
+
+  var FEED = [
+    {
+      id: "f1", time: "07:30", state: "live", stamp: "contested",
+      title: "Worldwide IT outage paralyzes critical infrastructure indefinitely under suspected hostile cyber crisis",
+      source: "Reuters", note: "No primary filing cited"
+    },
+    {
+      id: "f2", time: "09:15", state: "warn", stamp: "corroborated",
+      title: "Airlines ground hundreds of flights as check-in terminals fail",
+      source: "Associated Press", note: "Airport operators confirm"
+    },
+    {
+      id: "f3", time: "10:40", state: "warn", stamp: "corroborated",
+      title: "Hospitals switch to paper records after emergency systems go dark",
+      source: "CNN Health", note: "Three hospital groups named"
+    },
+    {
+      id: "f4", time: "06:05", state: "ok", stamp: "primary",
+      title: "Microsoft: 8.5 million Windows devices affected by faulty content update",
+      source: "Microsoft Security Response Center", note: "Primary disclosure"
+    },
+    {
+      id: "f5", time: "05:12", state: "ok", stamp: "primary",
+      title: "Falcon content update remediation and guidance",
+      source: "CrowdStrike", note: "Vendor incident notice"
+    }
+  ];
+
+  var LINEAGE = [
+    {
+      id: "a1", when: "14 Mar 2021", cat: "Technical", thread: "tech",
+      title: "Kernel telemetry driver RFC-819 adopted",
+      summary: "An architectural decision to run agent telemetry inside the Windows ring-0 kernel, so tamper attempts can be caught before user-space code executes.",
+      quote: "To ensure tamper-proof telemetry before user-space DLL injection can occur, packet inspection hooks must reside natively in the ring-0 dispatcher.",
+      source: { name: "Microsoft Hardware Dev Center", url: "https://learn.microsoft.com/en-us/windows-hardware/drivers/ifs/about-file-system-minifilter-drivers" }
+    },
+    {
+      id: "b1", when: "9 Nov 2022", cat: "Regulatory", thread: "reg",
+      title: "White House memo M-22-09 sets zero-trust mandate",
+      summary: "Federal guidance requires critical suppliers to keep endpoint sensors running continuously, without reboot interruption.",
+      quote: "Agencies must ensure endpoint detection and response sensors maintain continuous execution across all operating system interfaces without reboot interruption.",
+      source: { name: "Executive Office of the President / OMB", url: "https://www.whitehouse.gov/wp-content/uploads/2022/01/M-22-09.pdf" }
+    },
+    {
+      id: "a2", when: "22 Aug 2023", cat: "Technical", thread: "tech",
+      title: "Sensor agent v7.11 ships with a dynamic parser",
+      summary: "The Windows agent begins letting configuration channel files define new IPC template rules, without a signed binary rebuild.",
+      quote: "Release 7.11 expands Channel 291 evaluation capabilities to parse dynamic named-pipe execution rules without requiring signed binary recompilation.",
+      source: { name: "CrowdStrike technical advisory", url: "https://www.crowdstrike.com/blog/falcon-update-for-windows-hosts-technical-details/" }
+    },
+    {
+      id: "b2", when: "12 Feb 2024", cat: "Regulatory", thread: "reg",
+      title: "CISA alert lets definition files skip re-certification",
+      summary: "A joint defense alert permits threat-signature updates to bypass the full driver staging ring, for faster response to zero-days.",
+      quote: "Threat signature updates meeting schema criteria are exempted from the 14-day kernel staging ring to ensure zero-day response parity.",
+      source: { name: "US CISA national cyber alert", url: "https://www.cisa.gov/news-events/alerts/2024/07/19/widespread-it-outage-caused-software-update" }
+    },
+    {
+      id: "a3", when: "18 May 2024", cat: "Technical", thread: "tech",
+      title: "Definition channel expands to a 21st field",
+      summary: "Engineering adds Slot 21 evaluation logic to Channel 291 while tracking newly identified malicious named pipes.",
+      quote: "In May 2024, four additional IPC template instances were integrated into the Content Validator, expanding the validation schema from 20 to 21 fields.",
+      source: { name: "Preliminary post-incident review", url: "https://www.crowdstrike.com/blog/technical-root-cause-analysis/" }
+    },
+    {
+      id: "a4", when: "19 Jul 2024, 04:09", cat: "Primary", thread: "tech",
+      title: "Channel File 291 deployed with an out-of-bounds read",
+      summary: "A corrupted configuration file reaches endpoints. Whenever the sensor evaluates input 21, it reads past a mapped memory address and the system stops.",
+      quote: "At 04:09 UTC, Channel File 291 was distributed. The sensor encountered an unmapped memory address when evaluating input 21, resulting in a system crash.",
+      source: { name: "CrowdStrike remediation hub", url: "https://www.crowdstrike.com/blog/falcon-content-incident-remediation-and-guidance/" }
+    }
+  ];
+
+  var EDGES = {
+    a1a2: { rel: "amended", text: "v7.11 extended the kernel telemetry design to accept dynamic channel definitions." },
+    b1b2: { rel: "complied with", text: "Continuous-inspection requirements prompted waivers for automated content delivery." },
+    a2a3: { rel: "triggered", text: "The dynamic parser from v7.11 was later extended to evaluate Slot 21 templates." },
+    b2a4: { rel: "cascaded to", text: "The fast-track waiver let Channel 291 reach endpoints without a staging delay." },
+    a3a4: { rel: "escalated", text: "Slot 21 logic rolled out in May carried the pointer fault that fired on 19 July." },
+    a4focus: { rel: "triggered", text: "The 04:09 deployment preceded global headlines by roughly three hours." }
+  };
+
+  var FOCUS = {
+    title: "Worldwide IT outage paralyzes critical infrastructure indefinitely under suspected hostile cyber crisis",
+    when: "19 Jul 2024, 07:30",
+    summary: "Coverage describes a coordinated foreign cyber assault on global infrastructure. It does not mention the internal configuration file that preceded it by three hours.",
+    quote: "A catastrophic and seemingly hostile digital attack has struck Western infrastructure, grinding airlines, healthcare, and finance to an indefinite halt.",
+    source: { name: "Reuters", url: "https://www.reuters.com/technology/global-cyber-outage-grounds-flights-hits-media-financial-telecoms-2024-07-19/" }
+  };
+
+  var DRIFT = [
+    {
+      id: "d1", subject: "Attribution of the outage", factor: 92,
+      origin: {
+        name: "Falcon engineering incident notice", when: "19 Jul, 09:40",
+        text: "A logic flaw in dynamic channel file 291 produced an unexpected memory read out-of-bounds in Sensor v7.11."
+      },
+      reported: {
+        name: "Viral media wire", when: "19 Jul, 11:05",
+        before: "A catastrophic ",
+        marked: "hostile foreign cyberattack",
+        after: " has paralyzed Western critical infrastructure indefinitely."
+      },
+      quals: ["dynamic channel file logic flaw", "memory read out-of-bounds", "non-adversarial"],
+      note: "Every reference to configuration logic was removed. The event was reattributed to hostile cyberwarfare without a cited source."
+    },
+    {
+      id: "d2", subject: "Duration of the shutdown", factor: 81,
+      origin: {
+        name: "Technical workaround release", when: "19 Jul, 10:20",
+        text: "Reboot into Safe Mode and delete the file from the drivers folder to restore operations, usually within minutes per host."
+      },
+      reported: {
+        name: "Breaking news network", when: "19 Jul, 12:00",
+        before: "Aviation and hospitals are crippled ",
+        marked: "indefinitely, with experts warning systems may never fully recover",
+        after: "."
+      },
+      quals: ["manual safe-mode workaround", "operational within hours"],
+      note: "A five-minute per-host file deletion became an irreversible, permanent collapse. No named expert appears in the article."
+    }
+  ];
+
+  var RIPPLE = [
+    {
+      id: "r1", hop: 1, category: "Operational", when: "08:00",
+      title: "8.5 million Windows hosts in boot loops",
+      summary: "Direct casualty. Affected machines require manual safe-mode file removal.",
+      source: { name: "Microsoft Security Response Center", url: "https://blogs.microsoft.com/blog/2024/07/20/helping-our-customers-through-the-crowdstrike-outage" }
+    },
+    {
+      id: "r2", hop: 1, category: "Physical", when: "09:15",
+      title: "14 international airport hubs grounded",
+      summary: "Crew scheduling and gate terminals lock out. FAA issues ground stops for major carriers.",
+      source: { name: "Associated Press", url: "https://apnews.com/article/crowdstrike-outage-flights-grounded-banks-cyberattack-explained-b26a5789fcf78c6ff11ff230800bfcf7" }
+    },
+    {
+      id: "r3", hop: 2, category: "Market", when: "14:30",
+      title: "Cybersecurity valuations diverge",
+      summary: "CrowdStrike falls 11.1% while non-kernel competitors gain up to 12.4% on rotation.",
+      source: { name: "CNBC markets", url: "https://www.cnbc.com/2024/07/19/cybersecurity-stocks-drop-after-crowdstrike-microsoft-outage.html" }
+    },
+    {
+      id: "r4", hop: 2, category: "Regulatory", when: "22 Jul",
+      title: "Congressional subpoena on supply-chain risk",
+      summary: "The House Homeland Security Committee summons leadership to testify on single points of failure.",
+      source: { name: "House Committee on Homeland Security", url: "https://homeland.house.gov/hearing/the-crowdstrike-outage-examining-the-causes-and-consequences/" }
+    }
+  ];
+
+  /* ---------- shared pieces ---------- */
+
+  function tabButton(d, tab, label) {
+    return '<button role="tab" data-tab="' + tab + '">' + label + "</button>";
+  }
+
+  function sourceLink(src) {
+    return '<a href="' + esc(src.url) + '" target="_blank" rel="noreferrer">' + esc(src.name) + "</a>";
+  }
+
+  function feedNote(feedId) {
+    if (!feedId || feedId === "f1") return "";
+    var f = FEED.filter(function (x) { return x.id === feedId; })[0];
+    if (!f) return "";
+    return "You traced: " + f.title + " (" + f.source + "). This sample only ships the contested 07:30 headline's full trail.";
+  }
+
+  /* ---------- A: DOCKET ---------- */
+
+  var A = {
+    view: "feed",
+    selected: "f1",
+    render: function () {
+      var body = document.getElementById("body-a");
+      body.innerHTML = this[this.view]();
+    },
+    feed: function () {
+      var self = this;
+      return (
+        '<div class="a-sheethead"><h3>Filings received</h3><span>19 Jul 2024 · 5 records</span></div>' +
+        '<ul class="a-rows">' +
+        FEED.map(function (f) {
+          return (
+            '<li><button class="a-row" data-feed="' + f.id + '">' +
+            '<span class="a-when"><b>' + esc(f.time) + "</b>" + esc(f.source) + "</span>" +
+            '<span><span class="a-rtitle">' + esc(f.title) + "</span>" +
+            '<span class="a-rmeta">' + esc(f.note) + "</span></span>" +
+            '<span class="a-stamp ' + f.stamp + '">' + f.stamp + "</span>" +
+            "</button></li>"
+          );
+        }).join("") +
+        "</ul>"
+      );
+    },
+    lineage: function () {
+      var labels = { a1: "Exhibit 1", b1: "Exhibit 2", a2: "Exhibit 3", b2: "Exhibit 4", a3: "Exhibit 5", a4: "Exhibit 6" };
+      var bridges = ["a1a2", "b1b2", "a2a3", "b2a4", "a3a4"];
+      var out = (this.traceNote ? '<p class="trace-note">' + esc(this.traceNote) + "</p>" : "") +
+        '<div class="a-dochead"><h3>' + esc(FOCUS.title) + "</h3>" +
+        '<span class="a-docmeta">Filed 19 Jul 2024 · 6 exhibits precede · 2 threads</span></div>' +
+        '<ol class="a-trail">';
+      LINEAGE.forEach(function (n, i) {
+        out +=
+          '<li class="a-entry">' +
+          '<div class="a-card">' +
+          '<div class="a-kicker">' + labels[n.id] + " · " + esc(n.cat) + " · " + esc(n.when) + "</div>" +
+          "<h4>" + esc(n.title) + "</h4>" +
+          "<p>" + esc(n.summary) + "</p>" +
+          "<blockquote>&ldquo;" + esc(n.quote) + "&rdquo;</blockquote>" +
+          '<div class="a-src">' + sourceLink(n.source) + " · quoted from the record</div>" +
+          "</div>" +
+          "</li>";
+        if (bridges[i]) {
+          var e = EDGES[bridges[i]];
+          out += '<li class="a-bridge" aria-hidden="false"><span>' + esc(e.rel) + "</span><em>" + esc(e.text) + "</em></li>";
+        }
+      });
+      var e = EDGES.a4focus;
+      out += '<li class="a-bridge"><span>' + esc(e.rel) + "</span><em>" + esc(e.text) + "</em></li>";
+      out +=
+        '<li class="a-entry is-focus">' +
+        '<div class="a-card is-focus">' +
+        '<div class="a-kicker">Headline under audit · ' + esc(FOCUS.when) + "</div>" +
+        "<h4>" + esc(FOCUS.title) + "</h4>" +
+        "<p>" + esc(FOCUS.summary) + "</p>" +
+        "<blockquote>&ldquo;" + esc(FOCUS.quote) + "&rdquo;</blockquote>" +
+        '<div class="a-src">' + sourceLink(FOCUS.source) + " · not a primary record</div>" +
+        "</div></li></ol>";
+      return out;
+    },
+    drift: function () {
+      return DRIFT.map(function (d) {
+        return (
+          '<article class="a-rl">' +
+          '<div class="a-rlhead"><h3>' + esc(d.subject) + "</h3><span>" + d.factor + "% divergence</span></div>" +
+          '<div class="a-rlbody">' +
+          '<div class="a-rlside"><div class="a-rllabel">As filed · ' + esc(d.origin.name) + " · " + esc(d.origin.when) + "</div><p>" + esc(d.origin.text) + "</p>" +
+          '<ul class="a-quals">' + d.quals.map(function (q) { return "<li>" + esc(q) + "</li>"; }).join("") + "</ul></div>" +
+          '<div class="a-rlside reported"><div class="a-rllabel">As reported · ' + esc(d.reported.name) + " · " + esc(d.reported.when) + "</div><p>" +
+          esc(d.reported.before) + "<mark>" + esc(d.reported.marked) + "</mark>" + esc(d.reported.after) + "</p></div>" +
+          "</div>" +
+          '<div class="a-note"><b>Change note</b>' + esc(d.note) + "</div>" +
+          "</article>"
+        );
+      }).join("");
+    },
+    ripple: function () {
+      return (
+        '<div class="a-sched">' +
+        '<div class="a-schedhead"><h3>Exposure schedule</h3><span>4 downstream parties · 2 hops</span></div>' +
+        '<table><thead><tr><th scope="col">Hop</th><th scope="col">Party exposed</th><th scope="col">Evidence</th></tr></thead><tbody>' +
+        RIPPLE.map(function (r) {
+          return (
+            "<tr><td class=\"hop\">+" + r.hop + "</td>" +
+            '<td><span class="dim">' + esc(r.title) + "</span><br>" + esc(r.summary) + "</td>" +
+            '<td class="ev">' + sourceLink(r.source) + "</td></tr>"
+          );
+        }).join("") +
+        "</tbody></table></div>"
+      );
+    }
+  };
+
+  /* ---------- B: SWITCHBOARD ---------- */
+
+  var B = {
+    view: "feed",
+    selectedStation: "a4",
+    render: function () {
+      document.getElementById("body-b").innerHTML = this[this.view]();
+    },
+    feed: function () {
+      return (
+        '<div class="b-feed">' +
+        '<div class="b-feedbar"><span>incoming · technology / infrastructure</span><span>last poll 12s ago</span></div>' +
+        '<ul class="b-rows">' +
+        FEED.map(function (f) {
+          return (
+            '<li><button class="b-item ' + (f.id === "f1" ? "live" : "") + '" data-feed="' + f.id + '">' +
+            '<span class="b-lamp ' + f.state + '" aria-hidden="true"></span>' +
+            '<span><span class="b-htitle">' + esc(f.title) + "</span>" +
+            '<span class="b-hmeta">' + esc(f.source) + " · " + esc(f.time) + " · " + esc(f.note) + "</span></span>" +
+            '<span class="b-trace">Trace lineage</span>' +
+            "</button></li>"
+          );
+        }).join("") +
+        "</ul></div>"
+      );
+    },
+    station: function (n) {
+      return (
+        '<button class="b-station ' + (this.selectedStation === n.id ? "on" : "") + '" data-station="' + n.id + '">' +
+        '<span class="t">' + esc(n.title) + "</span>" +
+        '<span class="w">' + esc(n.when) + " · " + esc(n.cat) + "</span></button>"
+      );
+    },
+    cable: function (key) {
+      return '<span class="b-cable" data-rel="' + esc(EDGES[key].rel) + '"></span>';
+    },
+    lineage: function () {
+      var byId = {};
+      LINEAGE.forEach(function (n) { byId[n.id] = n; });
+      var tech = ["a1", "a2", "a3", "a4"];
+      var reg = ["b1", "b2"];
+      var out = (this.traceNote ? '<p class="trace-note">' + esc(this.traceNote) + "</p>" : "") +
+        '<div class="b-head"><span class="b-focusline">' + esc(FOCUS.title) + "</span>" +
+        '<span class="b-outlet">' + esc(FOCUS.source.name) + " · " + esc(FOCUS.when) + " · 2 incoming threads</span></div>";
+
+      out += '<div class="b-lane"><span class="b-lanelabel">technical</span><div class="b-run">';
+      tech.forEach(function (id, i) {
+        out += B.station(byId[id]);
+        if (i === 0) out += B.cable("a1a2");
+        if (i === 1) out += B.cable("a2a3");
+        if (i === 2) out += B.cable("a3a4");
+        if (i === 3) out += B.cable("a4focus");
+      });
+      out += '<span class="b-focuschip"><span class="t">Headline published</span><span class="w">misattributed as hostile attack</span></span>';
+      out += "</div></div>";
+
+      out += '<div class="b-lane"><span class="b-lanelabel">regulatory</span><div class="b-run">';
+      reg.forEach(function (id, i) {
+        out += B.station(byId[id]);
+        if (i === 0) out += B.cable("b1b2");
+      });
+      out += '<svg class="b-cable" style="height:14px;flex:1 1 28px" viewBox="0 0 40 14" preserveAspectRatio="none" aria-hidden="true"><path d="M0 7 H18 Q30 7 30 14" fill="none" stroke="#3E5A63" stroke-width="2"/></svg>';
+      out += '<span class="b-station" style="cursor:default;border-style:dashed"><span class="t">feeds into Channel 291</span><span class="w">waiver · 12 Feb 2024</span></span>';
+      out += "</div></div>";
+
+      var n = byId[this.selectedStation];
+      var incoming = { a1: null, b1: null, a2: "a1a2", b2: "b1b2", a3: "a2a3", a4: "a3a4" }[n.id];
+      out += '<div class="b-detail"><div class="d-top"><h4>' + esc(n.title) + '</h4><span class="d-when">' + esc(n.when) + " · " + esc(n.cat) + "</span></div>" +
+        "<p>" + esc(n.summary) + "</p>" +
+        "<blockquote>&ldquo;" + esc(n.quote) + "&rdquo;</blockquote>" +
+        '<div class="d-foot"><span style="color:var(--muted)">' + (incoming ? "linked: " + esc(EDGES[incoming].rel) : "origin of the thread") + "</span>" +
+        sourceLink(n.source) + "</div></div>";
+      return out;
+    },
+    drift: function () {
+      return DRIFT.map(function (d) {
+        return (
+          '<article class="b-drec">' +
+          '<div class="b-dhead"><h3>' + esc(d.subject) + "</h3><span>" + d.factor + "% divergence</span></div>" +
+          '<div class="b-trackrow"><span class="b-tracklabel">source<br>' + esc(d.origin.when) + "</span><p class=\"b-claim\">" + esc(d.origin.text) + "</p></div>" +
+          '<div class="b-trackrow"><span class="b-tracklabel">wire<br>' + esc(d.reported.when) + "</span><div><p class=\"b-claim\">" +
+          esc(d.reported.before) + "<mark>" + esc(d.reported.marked) + "</mark>" + esc(d.reported.after) + "</p>" +
+          '<ul class="b-dropped">' + d.quals.map(function (q) { return "<li>dropped: " + esc(q) + "</li>"; }).join("") + "</ul></div></div>" +
+          '<div class="b-meter"><div class="m-top"><span>signal distance</span><b>' + d.factor + " / 100</b></div>" +
+          '<div class="b-meterbar" role="img" aria-label="Drift score ' + d.factor + ' of 100"><i style="width:' + d.factor + '%"></i></div></div>' +
+          '<div class="b-dnote">' + esc(d.note) + "</div>" +
+          "</article>"
+        );
+      }).join("");
+    },
+    ripple: function () {
+      var ring1 = RIPPLE.filter(function (r) { return r.hop === 1; });
+      var ring2 = RIPPLE.filter(function (r) { return r.hop === 2; });
+      var pts = function (list, r, startAngle, step) {
+        return list.map(function (n, i) {
+          var a = (startAngle + i * step) * Math.PI / 180;
+          return { n: n, x: 180 + r * Math.cos(a), y: 125 + r * Math.sin(a) };
+        });
+      };
+      var p1 = pts(ring1, 56, 200, 120);
+      var p2 = pts(ring2, 100, 195, 150);
+      var dots = p1.concat(p2).map(function (p) {
+        var num = RIPPLE.indexOf(p.n) + 1;
+        return '<circle cx="' + p.x.toFixed(1) + '" cy="' + p.y.toFixed(1) + '" r="9" fill="#ECB05C"/>' +
+          '<text x="' + p.x.toFixed(1) + '" y="' + (p.y + 3.5).toFixed(1) + '" text-anchor="middle" font-size="9" font-family="Spline Sans Mono, monospace" fill="#18262C">' + num + "</text>";
+      }).join("");
+      var svg =
+        '<svg viewBox="0 0 360 250" role="img" aria-label="Exposure rings: center incident, inner ring one hop, outer ring two hops">' +
+        '<circle cx="180" cy="125" r="56" fill="none" stroke="#3E5A63" stroke-width="1.5" stroke-dasharray="3 5"/>' +
+        '<circle cx="180" cy="125" r="100" fill="none" stroke="#3E5A63" stroke-width="1.5"/>' +
+        '<circle cx="180" cy="125" r="18" fill="#EF7B63"/>' +
+        '<text x="180" y="129" text-anchor="middle" font-size="8" font-family="Spline Sans Mono, monospace" fill="#18262C">EVENT</text>' +
+        dots +
+        '<text x="180" y="240" text-anchor="middle" font-size="8" font-family="Spline Sans Mono, monospace" fill="#9DB0B2">distance from incident in hops</text>' +
+        "</svg>";
+      return (
+        '<div class="b-ripple"><div class="b-map">' + svg +
+        '<div class="mlegend"><span><i></i>relation stated</span><span><i class="dash"></i>hop ring</span></div></div>' +
+        '<ul class="b-list">' +
+        RIPPLE.map(function (r, i) {
+          return (
+            '<li><div class="b-exp"><span class="n ' + (r.hop === 2 ? "lv2" : "") + '">' + (i + 1) + "</span>" +
+            "<div><h4>" + esc(r.title) + "</h4><p>+" + r.hop + " hop · " + esc(r.category) + " · " + esc(r.when) + "</p></div></div></li>"
+          );
+        }).join("") +
+        "</ul></div>"
+      );
+    }
+  };
+
+  /* ---------- C: TRACE SHEET ---------- */
+
+  var C = {
+    view: "feed",
+    render: function () {
+      document.getElementById("body-c").innerHTML = this[this.view]();
+    },
+    feed: function () {
+      return (
+        '<div class="c-feedhead"><h3>Wire, 19 July</h3><span>times local · 5 entries</span></div>' +
+        '<ul class="c-slips">' +
+        FEED.map(function (f) {
+          return (
+            '<li><button class="c-slip ' + (f.stamp === "contested" ? "warn" : f.stamp === "primary" ? "" : "live") + '" data-feed="' + f.id + '">' +
+            '<span class="tab" aria-hidden="true"></span>' +
+            "<time>" + esc(f.time) + "</time>" +
+            '<span><span class="t">' + esc(f.title) + '</span><span class="s">' + esc(f.source) + " · " + esc(f.note) + "</span></span>" +
+            '<span class="go">Trace</span>' +
+            "</button></li>"
+          );
+        }).join("") +
+        "</ul>"
+      );
+    },
+    lineage: function () {
+      var byId = {};
+      LINEAGE.forEach(function (n) { byId[n.id] = n; });
+      var order = ["a1", "b1", "a2", "b2", "a3", "a4"];
+      var out = (this.traceNote ? '<p class="trace-note">' + esc(this.traceNote) + "</p>" : "") +
+        '<div class="c-sheethead"><h3>' + esc(FOCUS.title) + "</h3>" +
+        '<p>starting 14 Mar 2021 · time runs down the spine · left thread technical, right thread regulatory</p></div>';
+      out += '<div class="c-plot">';
+      order.forEach(function (id) {
+        var n = byId[id];
+        var tech = n.thread === "tech" ? n : null;
+        var reg = n.thread === "reg" ? n : null;
+        var cell = function (node, cls) {
+          if (!node) return '<div class="c-empty"></div>';
+          return '<button class="c-node ' + cls + '" data-node="' + node.id + '">' +
+            '<span class="t">' + esc(node.title) + '</span><span class="s">' + esc(node.cat) + "</span></button>";
+        };
+        out += '<div class="c-row">' + cell(tech, "tech") +
+          '<div class="c-spine"><time>' + esc(n.when.replace(" 2024,", "")) + "</time></div>" +
+          cell(reg, "reg") + "</div>";
+      });
+      out += '<div class="c-joins" aria-hidden="true"></div>';
+      out += '<button class="c-focusrow" data-node="focus" style="cursor:pointer;text-align:left;width:100%">' +
+        '<span class="fl">both threads meet · headline under audit</span>' +
+        '<span class="t">' + esc(FOCUS.title) + "</span></button>";
+      out += "</div>";
+      var sel = byId[this.selected] || byId.a4;
+      out += '<div class="c-detail">' +
+        '<div class="d-top"><h4>' + esc(sel.title) + '</h4><span class="d-when">' + esc(sel.when) + "</span></div>" +
+        "<p>" + esc(sel.summary) + "</p>" +
+        "<blockquote>&ldquo;" + esc(sel.quote) + "&rdquo;</blockquote>" +
+        '<div class="d-foot"><span>' + esc(sel.cat) + " · quoted from the record</span>" + sourceLink(sel.source) + "</div></div>";
+      return out;
+    },
+    drift: function () {
+      return DRIFT.map(function (d) {
+        return (
+          '<article class="c-drec">' +
+          "<h3>" + esc(d.subject) + "<span>" + d.factor + "% divergence</span></h3>" +
+          '<div class="c-pair">' +
+          '<div class="c-half"><div class="lab"><b>As filed</b><span>' + esc(d.origin.when) + "</span></div>" +
+          "<p>" + esc(d.origin.text) + "</p>" +
+          '<ul class="hedges">' + d.quals.map(function (q) { return "<li>kept: " + esc(q) + "</li>"; }).join("") + "</ul></div>" +
+          '<div class="c-half rep"><div class="lab"><b>As reported</b><span>' + esc(d.reported.when) + "</span></div>" +
+          "<p>" + esc(d.reported.before) + "<mark>" + esc(d.reported.marked) + "</mark>" + esc(d.reported.after) + "</p></div>" +
+          "</div>" +
+          '<div class="c-rulerwrap"><div class="c-ruler">' +
+          '<div class="line"></div>' +
+          [0, 25, 50, 75, 100].map(function (t) {
+            return '<div class="tick" style="left:' + t + '%"><span>' + t + "</span></div>";
+          }).join("") +
+          '<div class="c-marker" style="left:' + d.factor + '%"><span class="m-lab">' + d.factor + "</span><span class=\"m-pin\"></span></div>" +
+          "</div></div>" +
+          '<p class="c-dnote"><strong>What changed. </strong>' + esc(d.note) + "</p>" +
+          "</article>"
+        );
+      }).join("");
+    },
+    ripple: function () {
+      var groups = [
+        { label: "Operational & physical", items: RIPPLE.filter(function (r) { return r.category === "Operational" || r.category === "Physical"; }) },
+        { label: "Markets", items: RIPPLE.filter(function (r) { return r.category === "Market"; }) },
+        { label: "Government", items: RIPPLE.filter(function (r) { return r.category === "Regulatory"; }) }
+      ];
+      return (
+        '<div class="c-origin"><div class="t">Channel File 291 reaches endpoints</div><div class="s">19 Jul 2024, 04:09 UTC · 4 exposures traced</div></div>' +
+        '<div class="c-branches">' +
+        groups.map(function (g) {
+          return '<div class="c-branch"><h4>' + esc(g.label) + "</h4>" +
+            g.items.map(function (r) {
+              return '<div class="c-exp"><span class="c-hop">+' + r.hop + " hop</span>" +
+                '<div class="t">' + esc(r.title) + "</div>" +
+                '<div class="s">' + esc(r.summary) + "</div></div>";
+            }).join("") + "</div>";
+        }).join("") +
+        "</div>"
+      );
+    }
+  };
+
+  /* ---------- wiring ---------- */
+
+  var DIRS = { a: A, b: B, c: C };
+  var TABS = ["feed", "lineage", "drift", "ripple"];
+  var LABELS = { feed: "News feed", lineage: "Lineage", drift: "Claim drift", ripple: "Systemic ripple" };
+
+  Object.keys(DIRS).forEach(function (k) {
+    var dir = DIRS[k];
+    var list = document.querySelector('.tabs[data-dir="' + k + '"]');
+    list.innerHTML = TABS.map(function (t) {
+      var sel = t === dir.view;
+      return '<button role="tab" data-tab="' + t + '" aria-selected="' + sel + '"' + (sel ? "" : ' tabindex="-1"') + ">" + LABELS[t] + "</button>";
+    }).join("");
+
+    var body = document.getElementById("body-" + k);
+
+    function syncTabs() {
+      list.querySelectorAll("button").forEach(function (b) {
+        var on = b.getAttribute("data-tab") === dir.view;
+        b.setAttribute("aria-selected", String(on));
+        b.setAttribute("tabindex", on ? "0" : "-1");
+      });
+    }
+
+    list.addEventListener("click", function (e) {
+      var btn = e.target.closest("button[data-tab]");
+      if (!btn) return;
+      dir.view = btn.getAttribute("data-tab");
+      syncTabs();
+      dir.render();
+    });
+
+    list.addEventListener("keydown", function (e) {
+      var i = TABS.indexOf(dir.view);
+      if (e.key === "ArrowRight") { i = (i + 1) % TABS.length; }
+      else if (e.key === "ArrowLeft") { i = (i - 1 + TABS.length) % TABS.length; }
+      else { return; }
+      e.preventDefault();
+      dir.view = TABS[i];
+      syncTabs();
+      dir.render();
+      list.querySelector('[aria-selected="true"]').focus();
+    });
+
+    body.addEventListener("click", function (e) {
+      var feedBtn = e.target.closest("[data-feed]");
+      if (feedBtn) {
+        dir.selectedFeed = feedBtn.getAttribute("data-feed");
+        dir.traceNote = feedNote(dir.selectedFeed);
+        dir.view = "lineage";
+        syncTabs();
+        dir.render();
+        var active = list.querySelector('[aria-selected="true"]');
+        if (active) active.focus({ preventScroll: true });
+        return;
+      }
+      var st = e.target.closest("[data-station]");
+      if (st) {
+        dir.selectedStation = st.getAttribute("data-station");
+        dir.render();
+        return;
+      }
+      var nd = e.target.closest("[data-node]");
+      if (nd) {
+        dir.selected = nd.getAttribute("data-node");
+        dir.render();
+      }
+    });
+  });
+
+  var note = document.getElementById("pickNote");
+  document.querySelectorAll("[data-pick]").forEach(function (btn) {
+    btn.addEventListener("click", function () {
+      var letter = btn.getAttribute("data-pick");
+      document.querySelectorAll(".dir").forEach(function (s) {
+        s.classList.toggle("chosen", s.id === "dir-" + letter.toLowerCase());
+      });
+      note.hidden = false;
+      note.textContent = "Direction " + letter + " marked. Tell me in chat to build it, or name a mix such as B's feed with C's lineage.";
+    });
+  });
+})();
+</script>

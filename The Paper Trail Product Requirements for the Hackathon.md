@@ -1,10 +1,10 @@
-# PlaceWire: Product Requirements for the Hackathon
+# The Paper Trail: Product Requirements for the Hackathon
 
 *Working requirements document. Tracks used: SerpApi and you.com. Nexconn is out of scope for the first version.*
 
 ## 1. Summary
 
-PlaceWire is a place-based knowledge graph of how news events connect. It is not a news feed. Every headline on the map arrives with its **history** (what led to it), its **consequences** (what it affects), and an honest account of **how well its claims check out**.
+The Paper Trail is a place-based knowledge graph of how news events connect. It is not a news feed. Every headline on the map arrives with its **history** (what led to it), its **consequences** (what it affects), and an honest account of **how well its claims check out**.
 
 **One-line pitch:** Every headline arrives with its history and its consequences, and shows how much to trust each claim.
 

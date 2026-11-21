@@ -1,0 +1,439 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>The Paper Trail</title>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Atkinson+Hyperlegible:ital,wght@0,400;0,700;1,400&family=Fraunces:ital,opsz,wght@0,9..144,500;0,9..144,600;1,9..144,500&display=swap">
+<style>
+  :root {
+    --bg: #F4F7F8;
+    --ink: #1B2428;
+    --muted: #3E4C51;
+    --line: #D5DEE2;
+    --record: #0F6E56;
+    --changed: #9F2D2D;
+    --thread: #C4552A;
+  }
+  * { box-sizing: border-box; }
+  html, body { margin: 0; }
+  body {
+    background: var(--bg);
+    color: var(--ink);
+    font-family: "Atkinson Hyperlegible", "Segoe UI", sans-serif;
+    font-size: 1.05rem;
+    line-height: 1.5;
+  }
+  a:focus-visible, button:focus-visible, input:focus-visible {
+    outline: 2px solid var(--ink);
+    outline-offset: 2px;
+  }
+  .sheet { max-width: 40rem; margin: 0 auto; padding: 1.4rem 1.25rem 4rem; }
+  .brand {
+    display: flex; justify-content: space-between; gap: 1rem; align-items: baseline;
+    border-bottom: 2px solid var(--ink); padding-bottom: 0.55rem; margin-bottom: 0.9rem;
+  }
+  .brand strong { font-family: "Fraunces", Georgia, serif; font-weight: 500; font-size: 1.55rem; }
+  .meta { color: var(--muted); margin: 0; }
+  input[type="search"] {
+    width: 100%; font: inherit; color: inherit; background: transparent;
+    border: 1px solid var(--line); padding: 0.6rem 0.7rem; margin-bottom: 0.35rem;
+  }
+  .filters { display: flex; flex-wrap: wrap; gap: 0.15rem 0.85rem; margin: 0.2rem 0 0.15rem; }
+  .filters button {
+    font: inherit; color: var(--muted); background: transparent; border: 0;
+    border-bottom: 2px solid transparent; padding: 0.5rem 0; cursor: pointer; text-align: left;
+  }
+  .line-btn {
+    font: inherit; color: var(--muted); background: transparent; border: 0;
+    padding: 0; cursor: pointer;
+  }
+  .filters button[aria-pressed="true"] { color: var(--ink); border-bottom-color: var(--ink); }
+  .row {
+    display: block; width: 100%; text-align: left; font: inherit; color: inherit;
+    background: transparent; border: 0; border-top: 1px solid var(--line);
+    padding: 0.95rem 0 1rem; cursor: pointer;
+  }
+  .row h3, .open h3 {
+    font-family: "Fraunces", Georgia, serif; font-weight: 600;
+    letter-spacing: -0.02em; line-height: 1.18; margin: 0.2rem 0 0.35rem;
+  }
+  .row h3 { font-size: 1.35rem; }
+  .open h3 { font-size: clamp(1.7rem, 4vw, 2.05rem); margin-top: 0.35rem; }
+  .status { font-weight: 700; margin: 0.15rem 0; }
+  .status.changed { color: var(--changed); }
+  .status.record { color: var(--record); }
+  .status.thin, .status.unchecked { color: var(--muted); }
+  .open { border-top: 1px solid var(--line); padding: 0.95rem 0 0.4rem; }
+  .note { margin: 0.85rem 0 1.1rem; padding-left: 0.8rem; border-left: 3px solid var(--record); }
+  .note p { margin: 0; }
+  section { margin: 1.35rem 0 0; }
+  h4 { font-size: 1.05rem; margin: 0 0 0.45rem; }
+  .pair { display: grid; gap: 1rem; }
+  blockquote { margin: 0.3rem 0 0; }
+  a.src { color: var(--record); text-underline-offset: 0.15em; }
+  a.src:hover { text-decoration-thickness: 2px; }
+  .thread { list-style: none; margin: 0.2rem 0 0; padding: 0; }
+  .knot {
+    display: grid; grid-template-columns: 1.15rem minmax(0, 1fr);
+    gap: 0.8rem; padding: 0 0 1rem;
+  }
+  .rail { position: relative; }
+  .rail::before {
+    content: ""; position: absolute; left: 50%; top: 0.3rem; bottom: -1rem;
+    width: 2px; background: var(--thread); transform: translateX(-50%);
+  }
+  .knot:last-child .rail::before { bottom: 0.4rem; }
+  .dot {
+    position: relative; z-index: 1; display: block; width: 0.75rem; height: 0.75rem;
+    margin: 0.28rem auto 0; border: 2px solid var(--thread); border-radius: 50%;
+    background: var(--bg);
+  }
+  .knot.gap .dot { background: transparent; border-style: dashed; }
+  .when-line {
+    display: flex; flex-wrap: wrap; gap: 0.15rem 0.75rem; align-items: baseline;
+    color: var(--muted); margin: 0 0 0.15rem;
+  }
+  .reach { margin: 0.2rem 0 0; padding-left: 1.15rem; }
+  .reach li { margin: 0.45rem 0; }
+  .action {
+    font: inherit; color: var(--ink); background: transparent;
+    border: 1px solid var(--ink); padding: 0.55rem 0.8rem; cursor: pointer; margin-top: 0.7rem;
+  }
+  .verdict { margin-top: 0.8rem; padding-left: 0.8rem; border-left: 3px solid var(--changed); }
+  .verdict p { margin: 0.25rem 0; }
+  .empty { color: var(--muted); padding: 0.8rem 0; }
+  @media (prefers-reduced-motion: reduce) { * { scroll-behavior: auto !important; } }
+</style>
+</head>
+<body>
+<div class="sheet" id="app"></div>
+<script>
+const STORIES = [
+  {
+    id: "outage",
+    headline: "Headlines call the computer outage a cyberattack on hospitals and banks",
+    source: "Several outlets", when: "This morning",
+    status: "changed", statusText: "The telling changed",
+    oneLine: "The company described a bad update. The headlines describe an attack.",
+    trail: "Goes back to February",
+    note: "The outage is real. The company’s own note blames a faulty configuration file, not an attack. That cause was swapped out as the story spread.",
+    recordWho: "Company incident note",
+    recordUrl: "https://www.crowdstrike.com/blog/falcon-content-incident-remediation-and-guidance/",
+    recordText: "A logic flaw in a channel file caused a memory error on Windows systems running Sensor 7.11.",
+    reportedWho: "This morning’s headlines",
+    reportedUrl: "https://www.reuters.com/technology/global-cyber-outage-grounds-flights-hits-media-financial-telecoms-2024-07-19/",
+    reportedText: "A coordinated cyberattack paralyzed healthcare and finance.",
+    changedTitle: "The cause was swapped",
+    changedPlain: "A software fault became an attack. The file name and the sensor version disappeared.",
+    history: [
+      { id: "h1", when: "Today, 8:12", title: "Headlines call it an attack", source: "Several outlets", kind: "reported", kindText: "Reported", quote: "A coordinated cyberattack paralyzed healthcare and finance.", url: "https://www.reuters.com/technology/global-cyber-outage-grounds-flights-hits-media-financial-telecoms-2024-07-19/" },
+      { id: "h2", when: "Today, 4:40", title: "The company says a bad update caused the crash", source: "Company note", kind: "record", kindText: "On the record", quote: "A logic flaw in a channel file caused a memory error on Windows systems running Sensor 7.11.", url: "https://www.crowdstrike.com/blog/falcon-content-incident-remediation-and-guidance/" },
+      { id: "h3", when: "19 July, early", title: "Machines running Sensor 7.11 start failing", source: "Incident report", kind: "record", kindText: "On the record", quote: "Windows systems running Sensor 7.11 failed after a channel file was pushed.", url: "https://www.cisa.gov/news-events/alerts/2024/07/19/widespread-it-outage-caused-software-update" },
+      { id: "gap", when: "March to June", title: "Nothing public connects the February proposal to the July crash", source: "No filing found", kind: "gap", kindText: "Not enough yet", quote: "No public filing or news story in these months ties the design note to the outage." },
+      { id: "h4", when: "Three weeks earlier", title: "A security rule asked for a faster patch cycle", source: "Standards board", kind: "guess", kindText: "A reasonable guess", quote: "The dates line up with a faster patch rule. No filing says this rule caused the July crash.", url: "https://www.whitehouse.gov/wp-content/uploads/2022/01/M-22-09.pdf" },
+      { id: "h5", when: "February", title: "A design note let a driver load a file at startup", source: "Engineering proposal", kind: "record", kindText: "On the record", quote: "The proposal describes loading a configuration file into a driver at startup.", url: "https://learn.microsoft.com/en-us/windows-hardware/drivers/ifs/about-file-system-minifilter-drivers" }
+    ],
+    deeper: { id: "h6", when: "March 2021", title: "A driver note puts telemetry in the Windows kernel", source: "Microsoft driver guide", kind: "record", kindText: "On the record", quote: "Inspection hooks for tamper-proof telemetry sit in the kernel, before ordinary software starts.", url: "https://learn.microsoft.com/en-us/windows-hardware/drivers/ifs/about-file-system-minifilter-drivers" },
+    reaches: [
+      { who: "Airline crew systems", why: "Flights were held.", certainty: "Known from airport reports.", url: "https://apnews.com/article/crowdstrike-outage-flights-grounded-banks-cyberattack-explained-b26a5789fcf78c6ff11ff230800bfcf7" },
+      { who: "Hospital record sync", why: "Some clinics switched to paper.", certainty: "Reported. Not a measured count." },
+      { who: "Customers on Sensor 7.11", why: "Named in the incident note.", certainty: "Stated by the company.", url: "https://www.crowdstrike.com/blog/falcon-content-incident-remediation-and-guidance/" }
+    ],
+    claim: "This was a state-sponsored cyberattack.",
+    verdictTitle: "A disagreement was found.",
+    verdict: "The company’s incident note describes a logic flaw in a configuration file. Nothing in this trail describes an attack.",
+    verdictSources: "Used the company incident note and this morning’s headlines."
+  },
+  {
+    id: "chips",
+    headline: "An export rule is being reported as a total ban on advanced chips",
+    source: "Financial Times", when: "Today",
+    status: "changed", statusText: "The telling changed",
+    oneLine: "The rule sets a license threshold. Headlines call it a ban.",
+    trail: "Goes back one month",
+    note: "A license threshold was widened into a ban. The rule still allows some chips under a limit. The headline does not say that.",
+    recordWho: "Commerce Department notice",
+    recordUrl: "https://www.bis.doc.gov/index.php/regulations/export-administration-regulations-ear",
+    recordText: "Interconnect bandwidth above a set limit requires a validated export license.",
+    reportedWho: "Financial Times",
+    reportedUrl: "https://www.ft.com/content/semiconductors-ai-export-controls",
+    reportedText: "An expanded ban freezes next-generation datacenter shipments.",
+    changedTitle: "A threshold became a ban",
+    changedPlain: "A license you can apply for became a total freeze, and a performance limit became every advanced chip.",
+    history: [
+      { id: "c1", when: "Today", title: "Headlines call it a ban and a freeze", source: "Financial Times", kind: "reported", kindText: "Reported", quote: "Sweeping restrictions ground next-generation server deliveries.", url: "https://www.ft.com/content/semiconductors-ai-export-controls" },
+      { id: "c2", when: "3 days ago", title: "The Netherlands restricts servicing of advanced chipmaking tools", source: "Dutch government", kind: "record", kindText: "On the record", quote: "Export authorization is required for maintenance and spare parts on advanced systems.", url: "https://www.asml.com/en/news/press-releases/2024/dutch-export-control-update" },
+      { id: "c3", when: "2 weeks ago", title: "A chip design is revised to stay under the limit", source: "Technical report", kind: "record", kindText: "On the record", quote: "Memory configuration was reduced to stay under the density restriction.", url: "https://www.reuters.com/technology/nvidia-plans-launch-new-china-focused-ai-chip-2024-07-24/" },
+      { id: "c4", when: "1 month ago", title: "The Commerce Department sets the license threshold", source: "BIS notice", kind: "record", kindText: "On the record", quote: "Bandwidth above the published limit requires a license.", url: "https://www.bis.doc.gov/index.php/regulations/export-administration-regulations-ear" }
+    ],
+    reaches: [
+      { who: "Server assembly lines", why: "Shipments of affected boards were paused.", certainty: "Known from supply-chain reports." },
+      { who: "Domestic chip designers", why: "Trading jumped on the hope of replacement orders.", certainty: "Possible. The market move is real. The cause is a bet." },
+      { who: "Buyers above the threshold", why: "They now need a license.", certainty: "Stated in the rule.", url: "https://www.bis.doc.gov/index.php/regulations/export-administration-regulations-ear" }
+    ],
+    claim: "All advanced AI chips are now banned worldwide.",
+    verdictTitle: "A disagreement was found.",
+    verdict: "The notice is a license threshold from one government, not a worldwide ban. Some chips under the limit are unchanged.",
+    verdictSources: "Used the Commerce Department notice and today’s headline."
+  },
+  {
+    id: "flights",
+    headline: "Airlines have grounded their fleets indefinitely",
+    source: "Aviation wire", when: "Today",
+    status: "disagree", statusText: "People disagree",
+    oneLine: "The directive names 171 aircraft and a short inspection. The headline says fleets are grounded indefinitely.",
+    trail: "Goes back three weeks",
+    note: "Flights were cancelled, and the directive is real. Coverage splits on how long and how wide. The directive says those aircraft return after the inspection.",
+    recordWho: "Emergency directive",
+    recordUrl: "https://www.faa.gov/newsroom/updates-grounding-boeing-737-9-max-aircraft",
+    recordText: "Operators must inspect specific fittings before returning the affected aircraft to service. The inspection is a few hours.",
+    reportedWho: "Aviation wire",
+    reportedUrl: "https://www.reuters.com/business/aerospace-defense/us-faa-orders-temporary-grounding-certain-boeing-737-max-9-aircraft-2024-01-06/",
+    reportedText: "Airlines cancel hundreds of flights indefinitely amid an emergency fleet grounding.",
+    changedTitle: "A defined check became an indefinite grounding",
+    changedPlain: "171 aircraft became entire fleets. A few hours of inspection became no return date.",
+    history: [
+      { id: "f1", when: "Today", title: "Headlines say fleets are grounded indefinitely", source: "Aviation wire", kind: "reported", kindText: "Reported", quote: "Carriers face an indefinite grounding under catastrophic safety failures.", url: "https://www.reuters.com/business/aerospace-defense/us-faa-orders-temporary-grounding-certain-boeing-737-max-9-aircraft-2024-01-06/" },
+      { id: "f2", when: "Yesterday", title: "A directive orders inspections before those aircraft fly", source: "Aviation authority", kind: "record", kindText: "On the record", quote: "Operators must inspect guide fittings before returning aircraft to passenger service.", url: "https://www.faa.gov/newsroom/updates-grounding-boeing-737-9-max-aircraft" },
+      { id: "f3", when: "1 week ago", title: "A quality filing describes a door plug removed without a second sign-off", source: "Safety board", kind: "record", kindText: "On the record", quote: "Records show the plug was removed for rivet work without a formal second sign-off.", url: "https://www.ntsb.gov/investigations/Pages/DCA24MA063.aspx" },
+      { id: "f4", when: "3 weeks ago", title: "The aviation authority starts a manufacturing audit", source: "Aviation authority", kind: "record", kindText: "On the record", quote: "The authority begins an audit of the manufacturing line after a door-plug incident.", url: "https://www.faa.gov/newsroom/updates-grounding-boeing-737-9-max-aircraft" }
+    ],
+    reaches: [
+      { who: "171 aircraft of one type", why: "Pulled for inspection.", certainty: "Stated by the airlines and the directive.", url: "https://www.faa.gov/newsroom/updates-grounding-boeing-737-9-max-aircraft" },
+      { who: "Passengers on those flights", why: "Hundreds of flights were cancelled today.", certainty: "Known from airline schedules." },
+      { who: "Every other aircraft", why: "Not named in the directive.", certainty: "Possible only in the headline, not in the order." }
+    ],
+    claim: "Every airliner is grounded, with no return date.",
+    verdictTitle: "People disagree.",
+    verdict: "The directive and the airline notices describe an inspection and a return to service. The headline describes an indefinite grounding of fleets. Both are in circulation today.",
+    verdictSources: "Used yesterday’s directive and this morning’s headline."
+  },
+  {
+    id: "clinics",
+    headline: "Clinics may have switched to paper during the outage",
+    source: "Local reports", when: "This afternoon",
+    status: "thin", statusText: "Not enough yet",
+    oneLine: "A few reports mention paper records. There is no count, and no hospital filing.",
+    trail: "One day, then a gap",
+    note: "This is a lead, not a finding. The outage could have forced paper records. We do not have a number, a named hospital system, or a filing.",
+    recordWho: "No primary record yet",
+    recordText: "No hospital filing or company note in this trail counts how many clinics switched to paper.",
+    reportedWho: "Local report",
+    reportedText: "Some clinics said they charted on paper while systems were down.",
+    changedTitle: "There is nothing solid to compare yet",
+    changedPlain: "A handful of reports exist. They do not agree on a number, and none quotes a hospital record.",
+    history: [
+      { id: "p1", when: "This afternoon", title: "Local reports mention paper charting", source: "Local reports", kind: "reported", kindText: "Reported", quote: "Staff at some clinics said they wrote notes on paper during the outage." },
+      { id: "p2", when: "This morning", title: "Nothing filed by a hospital system", source: "No filing found", kind: "gap", kindText: "Not enough yet", quote: "No hospital filing, outage notice, or count turned up for this claim." }
+    ],
+    reaches: [
+      { who: "Clinics that lost the record system", why: "They would be the ones charting on paper.", certainty: "Possible. Not named yet." }
+    ],
+    claim: "Hospitals across the country switched to paper.",
+    verdictTitle: "Not enough yet.",
+    verdict: "A few local reports mention paper notes. No filing gives a count or names a hospital system. This claim is larger than the evidence.",
+    verdictSources: "Looked for a hospital filing and a company note. Neither is in the trail."
+  },
+  {
+    id: "banks",
+    headline: "A bank says payment systems are back after the morning outage",
+    source: "A wire service", when: "This hour",
+    status: "unchecked", statusText: "Not checked yet",
+    oneLine: "This headline has not been traced. Open it and ask for the trail.",
+    trail: "Not traced yet",
+    traced: false,
+    note: "A wire says card payments resumed. No bank filing in the trail gives a count, a cause, or a named system.",
+    recordWho: "No primary record yet",
+    recordText: "No bank notice in this trail says which systems failed or when they returned.",
+    reportedWho: "Wire service",
+    reportedText: "A bank says payment systems are back after the morning outage.",
+    changedTitle: "There is nothing solid to compare yet",
+    changedPlain: "One headline exists. It does not quote a bank record.",
+    history: [
+      { id: "b1", when: "This hour", title: "A wire says payments are back", source: "A wire service", kind: "reported", kindText: "Reported", quote: "Card payments resumed after the morning outage, the wire says, without naming the bank systems." },
+      { id: "b2", when: "This morning", title: "No bank notice turned up", source: "No filing found", kind: "gap", kindText: "Not enough yet", quote: "No bank filing, outage notice, or count is in the trail." }
+    ],
+    reaches: [
+      { who: "Card holders at that bank", why: "They would have been the ones turned away.", certainty: "Possible. The bank is not named." }
+    ],
+    claim: "Payment systems everywhere are back to normal.",
+    verdictTitle: "Not enough yet.",
+    verdict: "One wire says payments resumed. It does not name the bank or the systems, and no filing confirms a return to normal.",
+    verdictSources: "Looked for a bank notice. None is in the trail."
+  }
+];
+
+const FILTERS = [
+  ["all", "All"],
+  ["changed", "The telling changed"],
+  ["disagree", "People disagree"],
+  ["thin", "Not enough yet"],
+  ["unchecked", "Not checked yet"]
+];
+
+const ui = { q: "", filter: "all", open: null, focus: null, checked: false, deeper: false, traced: {} };
+
+function esc(s) {
+  return String(s).replace(/[&<>"']/g, (c) => ({ "&": "&amp;", "<": "&lt;", ">": "&gt;", '"': "&quot;", "'": "&#39;" }[c]));
+}
+function host(url) {
+  try { return new URL(url).hostname.replace(/^www\./, ""); } catch (e) { return "Source"; }
+}
+function link(url) {
+  if (!url) return "";
+  return `<a class="src" href="${esc(url)}" target="_blank" rel="noopener noreferrer">${esc(host(url))}</a>`;
+}
+function statusClass(status) {
+  if (status === "changed") return "changed";
+  if (status === "record" || status === "matches") return "record";
+  if (status === "thin" || status === "unchecked") return status;
+  return "";
+}
+function kindClass(kind) {
+  if (kind === "record") return "record";
+  if (kind === "gap") return "thin";
+  return "";
+}
+
+function storyBody(s) {
+  if (s.traced === false && !ui.traced[s.id]) {
+    return `<article class="open">
+      <p class="meta">${esc(s.when)}, ${esc(s.source)}</p>
+      <p class="status unchecked">Not checked yet</p>
+      <h3>${esc(s.headline)}</h3>
+      <div class="note"><p><strong>Reading note.</strong> This headline is not on a trail yet. Tracing looks for the record behind it, then shows what changed, how we got here, and who it reaches.</p></div>
+      <button class="action" type="button" data-act="trace" data-id="${s.id}">Trace this story</button>
+      <p><button class="action" type="button" data-act="close">Close this story</button></p>
+    </article>`;
+  }
+  const history = s.history.concat(ui.deeper && s.deeper ? [s.deeper] : []);
+  const steps = history.map((h) => {
+    const shown = ui.focus === h.id;
+    return `<li><div class="knot ${h.kind === "gap" ? "gap" : ""}">
+      <span class="rail" aria-hidden="true"><span class="dot"></span></span>
+      <div>
+        <p class="when-line"><button class="line-btn" type="button" data-act="focus" data-id="${h.id}" aria-expanded="${shown}">${esc(h.when)}</button> ${link(h.url)}</p>
+        <p><strong>${esc(h.title)}</strong></p>
+        <p class="meta"><span class="status ${kindClass(h.kind)}">${esc(h.kindText)}</span><br>${esc(h.source)}</p>
+        ${shown ? `<blockquote>${esc(h.quote)}</blockquote>` : ""}
+      </div>
+    </div></li>`;
+  }).join("");
+  const reaches = s.reaches.map((r) =>
+    `<li><strong>${esc(r.who)}.</strong> ${esc(r.why)} ${esc(r.certainty)} ${link(r.url)}</li>`
+  ).join("");
+  return `<article class="open">
+    <p class="meta">${esc(s.when)}, ${esc(s.source)}</p>
+    <p class="status ${statusClass(s.status)}">${esc(s.statusText)}</p>
+    <h3>${esc(s.headline)}</h3>
+    <div class="note"><p><strong>Reading note.</strong> ${esc(s.note)}</p></div>
+    <section>
+      <h4>What changed</h4>
+      <div class="pair">
+        <div>
+          <p><strong>What the record says</strong></p>
+          <p class="meta">${esc(s.recordWho)}</p>
+          <p>${link(s.recordUrl)}</p>
+          <blockquote>${esc(s.recordText)}</blockquote>
+        </div>
+        <div>
+          <p><strong>What the headline says</strong></p>
+          <p class="meta">${esc(s.reportedWho)}</p>
+          <p>${link(s.reportedUrl)}</p>
+          <blockquote>${esc(s.reportedText)}</blockquote>
+        </div>
+      </div>
+      <p><strong>${esc(s.changedTitle)}.</strong> ${esc(s.changedPlain)}</p>
+    </section>
+    <section>
+      <h4>How we got here</h4>
+      <p class="meta">${esc(s.trail)}. The date sits with the page it came from.</p>
+      <ol class="thread">${steps}</ol>
+      ${s.deeper && !ui.deeper ? `<button class="action" type="button" data-act="deeper">Look further back</button>` : ""}
+    </section>
+    <section>
+      <h4>Who this reaches</h4>
+      <ul class="reach">${reaches}</ul>
+    </section>
+    <section>
+      <h4>Check this claim</h4>
+      <p>${esc(s.claim)}</p>
+      <button class="action" type="button" data-act="check">${ui.checked ? "Hide this check" : "Check this claim"}</button>
+      ${ui.checked ? `<div class="verdict"><p><strong>${esc(s.verdictTitle)}</strong> ${esc(s.verdict)}</p><p class="meta">${esc(s.verdictSources)} This check only reads sources already in the trail.</p></div>` : ""}
+    </section>
+    <p><button class="action" type="button" data-act="close">Close this story</button></p>
+  </article>`;
+}
+
+function render(keepFocus) {
+  const q = ui.q.trim().toLowerCase();
+  const rows = STORIES.filter((s) => {
+    if (ui.filter !== "all" && s.status !== ui.filter) return false;
+    if (!q) return true;
+    return (s.headline + " " + s.oneLine + " " + s.source).toLowerCase().includes(q);
+  });
+  const list = rows.map((s) => s.id === ui.open
+    ? storyBody(s)
+    : `<button class="row" type="button" data-act="open" data-id="${s.id}">
+        <p class="meta">${esc(s.when)}, ${esc(s.source)}</p>
+        <p class="status ${statusClass(s.status)}">${esc(s.statusText)}</p>
+        <h3>${esc(s.headline)}</h3>
+        <p class="meta">${esc(s.oneLine)}</p>
+        <p class="meta">${esc(s.trail)}</p>
+      </button>`
+  ).join("");
+  document.getElementById("app").innerHTML = `
+    <div class="brand"><strong>The Paper Trail</strong><span class="meta">Saturday 21 November</span></div>
+    <input id="q" type="search" placeholder="Search today’s headlines" aria-label="Search today’s headlines" value="${esc(ui.q)}">
+    <div class="filters" role="group" aria-label="Filter by what we know">${FILTERS.map(([id, label]) =>
+      `<button type="button" data-act="filter" data-id="${id}" aria-pressed="${ui.filter === id}">${label}</button>`
+    ).join("")}</div>
+    ${rows.length ? list : `<p class="empty">Nothing in today’s list matches that.</p>`}`;
+  if (keepFocus) {
+    const el = document.getElementById("q");
+    if (el) { el.focus(); const n = el.value.length; el.setSelectionRange(n, n); }
+  }
+}
+
+document.body.addEventListener("click", (e) => {
+  if (e.target.closest("a.src")) return;
+  const btn = e.target.closest("[data-act]");
+  if (!btn) return;
+  const act = btn.getAttribute("data-act");
+  const id = btn.getAttribute("data-id");
+  if (act === "filter") ui.filter = id;
+  if (act === "open") {
+    ui.open = id;
+    ui.checked = false;
+    ui.deeper = false;
+    const story = STORIES.find((s) => s.id === id);
+    ui.focus = story && story.history ? (story.history.find((h) => h.kind === "record") || story.history[0]).id : null;
+  }
+  if (act === "close") ui.open = null;
+  if (act === "focus") ui.focus = ui.focus === id ? null : id;
+  if (act === "check") ui.checked = !ui.checked;
+  if (act === "deeper") ui.deeper = true;
+  if (act === "trace") {
+    ui.traced[id] = true;
+    const traced = STORIES.find((s) => s.id === id);
+    if (traced) {
+      traced.status = "thin";
+      traced.statusText = "Not enough yet";
+      traced.trail = "One hour, then a gap";
+      ui.focus = traced.history[0].id;
+    }
+  }
+  render(act === "filter" ? false : document.activeElement && document.activeElement.id === "q");
+});
+
+document.body.addEventListener("input", (e) => {
+  if (e.target.id !== "q") return;
+  ui.q = e.target.value;
+  render(true);
+});
+
+render();
+</script>
+</body>
+</html>

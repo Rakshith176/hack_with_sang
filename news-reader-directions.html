@@ -1,0 +1,788 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>The Paper Trail — three ways to read the news</title>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Atkinson+Hyperlegible:ital,wght@0,400;0,700;1,400;1,700&family=Familjen+Grotesk:ital,wght@0,400;0,500;0,600;0,700;1,400&family=Fraunces:ital,opsz,wght@0,9..144,500;0,9..144,620;1,9..144,500&family=Spectral:ital,wght@0,400;0,600;0,700;1,400;1,600&display=swap">
+<style>
+  :root {
+    --page: #E6E8E4;
+    --page-ink: #1A1E1C;
+    --page-muted: #3E4742;
+    --page-line: #C5CAC3;
+    --page-card: #F4F5F2;
+    color-scheme: light;
+  }
+  * { box-sizing: border-box; }
+  html, body { margin: 0; }
+  body {
+    background: var(--page);
+    color: var(--page-ink);
+    font-family: "Atkinson Hyperlegible", "Segoe UI", sans-serif;
+    line-height: 1.5;
+    padding: 0 1.25rem 6rem;
+  }
+  .wrap { max-width: 1180px; margin: 0 auto; }
+  a:focus-visible, button:focus-visible, input:focus-visible {
+    outline: 2px solid var(--page-ink);
+    outline-offset: 2px;
+  }
+  .mast {
+    padding: 2.5rem 0 1.4rem;
+    border-bottom: 1px solid var(--page-line);
+  }
+  .mast h1 {
+    font-family: "Fraunces", Georgia, serif;
+    font-weight: 500;
+    font-size: clamp(2rem, 4vw, 3.1rem);
+    line-height: 1.08;
+    letter-spacing: -0.02em;
+    margin: 0 0 0.8rem;
+    max-width: 22ch;
+  }
+  .lede { max-width: 68ch; margin: 0; color: var(--page-muted); font-size: 1.05rem; }
+  .lede strong { color: var(--page-ink); font-weight: 700; }
+  .map, .api {
+    padding: 1.6rem 0;
+    border-bottom: 1px solid var(--page-line);
+    max-width: 74ch;
+  }
+  .map h2, .api h2, .brief h2 {
+    font-family: "Fraunces", Georgia, serif;
+    font-weight: 500;
+    font-size: 1.45rem;
+    margin: 0 0 0.6rem;
+  }
+  .map ol, .map ul, .api ul { margin: 0.4rem 0 0; padding-left: 1.15rem; }
+  .map li, .api li { margin: 0.35rem 0; }
+  .map p, .api p, .thesis { margin: 0.4rem 0 0; }
+  .pick-note {
+    margin-top: 1rem;
+    padding: 0.75rem 0.9rem;
+    background: var(--page-card);
+    border: 1px solid var(--page-line);
+    border-left: 3px solid #1A1E1C;
+  }
+  .pick-note[hidden] { display: none; }
+  .dir {
+    display: grid;
+    grid-template-columns: 280px minmax(0, 1fr);
+    gap: 1.5rem;
+    padding: 2rem 0;
+    border-bottom: 1px solid var(--page-line);
+    scroll-margin-top: 0.75rem;
+  }
+  .dir.chosen .frame { outline: 2px solid var(--page-ink); outline-offset: 4px; }
+  .brief { position: sticky; top: 0.75rem; align-self: start; }
+  .letter {
+    font-family: "Fraunces", Georgia, serif;
+    font-size: 2.6rem;
+    line-height: 1;
+    margin: 0;
+    color: var(--page-muted);
+  }
+  .thesis { color: var(--page-muted); }
+  .specs { margin: 0.9rem 0; display: grid; gap: 0.45rem; font-size: 0.92rem; }
+  .specs div { display: grid; grid-template-columns: 4.2rem 1fr; gap: 0.5rem; }
+  .specs dt { color: var(--page-muted); }
+  .specs dd { margin: 0; }
+  .swatches { display: flex; gap: 6px; }
+  .swatches i { width: 16px; height: 16px; display: block; border: 1px solid rgba(0,0,0,.2); }
+  .use {
+    font: inherit;
+    font-size: 0.95rem;
+    background: var(--page-card);
+    color: var(--page-ink);
+    border: 1px solid var(--page-line);
+    padding: 0.55rem 0.8rem;
+    cursor: pointer;
+  }
+  .use:hover { border-color: var(--page-ink); }
+  .frame {
+    border: 1px solid #B7BDB6;
+    background: white;
+    min-height: 640px;
+    overflow: hidden;
+  }
+
+  /* ---------- A evening column ---------- */
+  .da {
+    --bg: #F4F7F8;
+    --ink: #1B2428;
+    --muted: #3E4C51;
+    --line: #D5DEE2;
+    --record: #0F6E56;
+    --changed: #9F2D2D;
+    --paper: #F4F7F8;
+    background: var(--bg);
+    color: var(--ink);
+    font-family: "Atkinson Hyperlegible", "Segoe UI", sans-serif;
+    min-height: 640px;
+  }
+  .da .sheet { max-width: 40rem; margin: 0 auto; padding: 1.4rem 1.3rem 2rem; }
+  .da .brand {
+    display: flex; justify-content: space-between; gap: 1rem; align-items: baseline;
+    border-bottom: 2px solid var(--ink); padding-bottom: 0.55rem; margin-bottom: 0.9rem;
+  }
+  .da .brand strong { font-family: "Fraunces", Georgia, serif; font-weight: 500; font-size: 1.45rem; }
+  .da .brand span { color: var(--muted); font-size: 0.92rem; }
+  .da .tools { display: flex; gap: 0.5rem; align-items: center; margin-bottom: 0.4rem; }
+  .da input[type="search"], .db input[type="search"], .dc input[type="search"] {
+    width: 100%; font: inherit; font-size: 0.95rem; color: inherit;
+    background: transparent; border: 1px solid var(--line); padding: 0.55rem 0.6rem;
+  }
+  .da .filters, .db .filters, .dc .filters { display: flex; flex-wrap: wrap; gap: 0.35rem; margin: 0.55rem 0 0.3rem; }
+  .da .filters button, .db .filters button, .dc .filters button {
+    font: inherit; font-size: 0.92rem; color: var(--muted); background: transparent;
+    border: 0; border-bottom: 2px solid transparent; padding: 0.55rem 0.2rem; cursor: pointer;
+  }
+  .da .filters button[aria-pressed="true"],
+  .db .filters button[aria-pressed="true"],
+  .dc .filters button[aria-pressed="true"] { color: var(--ink); border-bottom-color: var(--ink); }
+  .da .row {
+    width: 100%; text-align: left; font: inherit; color: inherit; background: transparent;
+    border: 0; border-top: 1px solid var(--line); padding: 0.9rem 0; cursor: pointer;
+  }
+  .da .row h3, .db .item h3, .dc .item h3 {
+    font-family: "Fraunces", Georgia, serif; font-weight: 620; font-size: 1.28rem;
+    line-height: 1.2; margin: 0.2rem 0; letter-spacing: -0.015em;
+  }
+  .db .item h3, .dc .item h3 { font-family: inherit; }
+  .da .meta, .db .meta, .dc .meta { color: var(--muted); font-size: 0.92rem; margin: 0; }
+  .da .status, .db .status, .dc .status { font-weight: 700; }
+  .da .status.changed, .db .status.changed, .dc .status.changed { color: var(--changed); }
+  .da .status.matches, .db .status.matches, .dc .status.matches,
+  .da .status.record, .db .status.record, .dc .status.record { color: var(--record); }
+  .da .status.disagree, .db .status.disagree, .dc .status.disagree { color: var(--ink); }
+  .da .open { border-top: 1px solid var(--line); padding: 0.2rem 0 0.6rem; }
+  .da .open h3 {
+    font-family: "Fraunces", Georgia, serif; font-weight: 620; font-size: 1.7rem;
+    line-height: 1.18; margin: 0.35rem 0 0.8rem; letter-spacing: -0.02em;
+  }
+  .note {
+    margin: 0.8rem 0 1rem; padding-left: 0.8rem; border-left: 3px solid var(--record);
+  }
+  .note p { margin: 0; }
+  .pair { display: grid; gap: 0.9rem; margin: 0.4rem 0 1rem; }
+  .pair h4, .trail h4, .reach h4, .check h4 { font-size: 1rem; margin: 0 0 0.25rem; font-weight: 700; }
+  blockquote { margin: 0.2rem 0 0; }
+  .changed-line { margin: 0 0 1rem; }
+  .step {
+    display: grid; grid-template-columns: 11rem minmax(0, 1fr); gap: 0.8rem;
+    border-top: 1px solid var(--line); padding: 0.7rem 0; align-items: start;
+  }
+  .step .when { display: flex; flex-direction: column; align-items: flex-start; gap: 0.2rem; }
+  .step .when { color: var(--muted); }
+  .step.gap { background: repeating-linear-gradient(-45deg, transparent, transparent 6px, rgba(0,0,0,.03) 6px, rgba(0,0,0,.03) 7px); }
+  .quote { display: block; margin: 0.45rem 0 0; }
+a.src { color: var(--record); font-size: 0.92rem; text-underline-offset: 0.14em; }
+a.src:hover { text-decoration-thickness: 2px; }
+.when-line { display: flex; flex-wrap: wrap; gap: 0.15rem 0.7rem; align-items: baseline; }
+.when-btn, .step-body, .knot-btn {
+  font: inherit; color: inherit; background: transparent; border: 0; padding: 0;
+  text-align: left; cursor: pointer; width: 100%;
+}
+.when-btn { color: var(--muted); width: auto; }
+  .reach li { margin: 0.35rem 0; }
+  .check { margin-top: 1rem; padding-top: 0.8rem; border-top: 1px solid var(--line); }
+  .check button, .back {
+    font: inherit; font-size: 0.95rem; color: var(--ink); background: transparent;
+    border: 1px solid var(--ink); padding: 0.5rem 0.75rem; cursor: pointer; margin-top: 0.45rem;
+  }
+  .verdict { margin-top: 0.7rem; }
+  .empty { color: var(--muted); padding: 0.8rem 0; }
+
+  /* ---------- B the desk ---------- */
+  .db {
+    --bg: #E4EADF;
+    --paper: #F7F8F4;
+    --ink: #1E2A22;
+    --muted: #3E4A42;
+    --line: #C9D0C4;
+    --record: #3D5A40;
+    --changed: #8C3A2F;
+    background: var(--bg);
+    color: var(--ink);
+    font-family: "Familjen Grotesk", "Segoe UI", sans-serif;
+    min-height: 640px;
+    container-type: inline-size;
+  }
+  .db .split { display: grid; grid-template-columns: 280px minmax(0, 1fr); min-height: 640px; }
+  .db .list { padding: 1rem 0.9rem 1.4rem; border-right: 1px solid var(--line); }
+  .db .read { background: var(--paper); padding: 1.15rem 1.25rem 1.6rem; }
+  .db .brand { font-weight: 700; font-size: 1.15rem; margin: 0 0 0.7rem; }
+  .db .item {
+    width: 100%; text-align: left; font: inherit; color: inherit; background: transparent;
+    border: 0; border-left: 3px solid transparent; padding: 0.7rem 0.55rem; cursor: pointer;
+    border-bottom: 1px solid var(--line);
+  }
+  .db .item[aria-current="true"] { background: var(--paper); border-left-color: var(--record); }
+  .db .item h3 { font-weight: 600; font-size: 1.02rem; line-height: 1.3; }
+  .db .read h3 { font-weight: 700; font-size: 1.55rem; line-height: 1.2; margin: 0.2rem 0 0.7rem; letter-spacing: -0.02em; }
+  .db .dates { display: flex; flex-wrap: wrap; gap: 0.55rem 0.7rem; margin: 0.35rem 0 0.7rem; align-items: flex-start; }
+  .db .date-pair { display: flex; flex-direction: column; align-items: flex-start; gap: 0.15rem; max-width: 11rem; }
+  .db .dates button {
+    font: inherit; font-size: 0.88rem; color: var(--ink); background: transparent;
+    border: 1px solid var(--line); padding: 0.4rem 0.55rem; cursor: pointer;
+  }
+  .db .dates button[aria-pressed="true"] { border-color: var(--ink); background: var(--bg); }
+  .db .pair { grid-template-columns: 1fr 1fr; gap: 1rem; }
+  .db .pair > div { padding-top: 0.35rem; }
+  @container (max-width: 760px) {
+    .db .split { grid-template-columns: 1fr; }
+    .db .list { border-right: 0; border-bottom: 1px solid var(--line); }
+    .db .pair { grid-template-columns: 1fr; }
+  }
+
+  /* ---------- C the thread ---------- */
+  .dc {
+    --bg: #E7EEF6;
+    --paper: #F7F9FC;
+    --ink: #172033;
+    --muted: #3A4558;
+    --line: #D5DEEA;
+    --record: #1A4F8B;
+    --changed: #C4552A;
+    --thread: #C4552A;
+    background: var(--bg);
+    color: var(--ink);
+    font-family: "Spectral", Georgia, serif;
+    min-height: 640px;
+    padding: 1rem 0 1.5rem;
+  }
+  .dc .phone { max-width: 27rem; margin: 0 auto; background: var(--paper); min-height: 620px; padding: 1rem 1.05rem 1.4rem; border: 1px solid var(--line); }
+  .dc .brand { display: flex; justify-content: space-between; align-items: baseline; margin-bottom: 0.6rem; }
+  .dc .brand strong { font-weight: 700; font-size: 1.25rem; }
+  .dc .item {
+    width: 100%; text-align: left; font: inherit; color: inherit; background: transparent;
+    border: 0; border-top: 1px solid var(--line); padding: 0.85rem 0; cursor: pointer;
+  }
+  .dc .item h3 { font-weight: 600; font-size: 1.22rem; line-height: 1.25; margin: 0.15rem 0; }
+  .dc .story-h {
+    font-weight: 600; font-size: 1.55rem; line-height: 1.22; margin: 0.4rem 0 0.7rem;
+  }
+  .dc .thread { list-style: none; margin: 0.4rem 0 0; padding: 0 0 0 0.2rem; }
+  .dc .knot {
+    width: 100%; text-align: left; font: inherit; color: inherit; background: transparent;
+    border: 0; display: grid;
+    grid-template-columns: 1.1rem minmax(0, 1fr); gap: 0.75rem;
+    padding: 0 0 0.9rem;
+  }
+  .dc .rail {
+    width: 1.1rem; position: relative;
+  }
+  .dc .rail::before {
+    content: ""; position: absolute; left: 50%; top: 0; bottom: -0.9rem; width: 2px;
+    background: var(--thread); transform: translateX(-50%);
+  }
+  .dc .knot:last-child .rail::before { bottom: 0.4rem; }
+  .dc .dot {
+    position: relative; z-index: 1; width: 0.72rem; height: 0.72rem; margin: 0.35rem auto 0;
+    border: 2px solid var(--thread); background: var(--paper); border-radius: 50%; display: block;
+  }
+  .dc .knot.gap .dot { background: transparent; border-style: dashed; }
+  .dc .knot .body { padding-bottom: 0.2rem; }
+  .dc .back { margin-bottom: 0.4rem; }
+  .dc .filters button, .dc .check button, .dc .back, .dc input { font-family: "Atkinson Hyperlegible", sans-serif; }
+
+  @media (max-width: 860px) {
+    .dir { grid-template-columns: 1fr; }
+    .brief { position: static; }
+  }
+  @media (prefers-reduced-motion: reduce) {
+    * { scroll-behavior: auto !important; }
+  }
+</style>
+</head>
+<body>
+<div class="wrap">
+  <header class="mast">
+    <h1>Read today’s news with the trail still attached</h1>
+    <p class="lede">The Paper Trail already knows four things about a story: what was originally said, how the telling changed, what came before it, and who it reaches. They currently live in separate tools, and the news itself is a popup. These three directions make <strong>today’s list the front door</strong>, and open a story into the claim, the history, and a reading note a person can actually use.</p>
+    <p class="pick-note" id="pick-note" hidden></p>
+  </header>
+
+  <section class="map">
+    <h2>One story, not five tools</h2>
+    <p>A person opens the app to read the news. Everything else hangs off the story they tap.</p>
+    <ol>
+      <li><strong>Today.</strong> Headlines, who published them, and one plain status: matches the record, the telling changed, people disagree, or not enough yet.</li>
+      <li><strong>The headline they saw,</strong> then a reading note in one or two sentences. The note is marked as a reading note and sits beside the sources.</li>
+      <li><strong>What changed.</strong> The original sentence and the headline, then what was dropped, inflated, or widened.</li>
+      <li><strong>How we got here.</strong> A dated trail, newest first, including quiet stretches where nothing public was filed, and steps that are only a reasonable guess.</li>
+      <li><strong>Who this reaches.</strong> A short list. Each line says whether it is known or only possible.</li>
+      <li><strong>Check this claim.</strong> Runs only when asked. Comes back as a sentence plus the sources it used. It never says “true” or “false”.</li>
+    </ol>
+    <p>Old names, if you still think in them: discover news is Today, lineage is How we got here, drift is What changed, ripple is Who this reaches, interrogation is Check this claim. Drill deeper is just an older date on the same trail.</p>
+  </section>
+
+  <section class="api">
+    <h2>What would change in the backend</h2>
+    <p>The graph stays the source of truth. The screen needs a reading view derived from it, because the current payload is built for a forensic canvas.</p>
+    <ul>
+      <li>A feed row: plain status, one sentence on what changed, and how far back the trail goes.</li>
+      <li>A reading note on the story, written when a headline is analyzed, separate from the drift paragraph.</li>
+      <li>Each history step already exists as a node. The view labels it in plain words: on the record, reported, a reasonable guess, or nothing public filed.</li>
+      <li>Who this reaches already exists as ripple nodes. The view wants a person or system, a consequence, and known or possible.</li>
+      <li>The live check stays its own request. It only runs when someone asks.</li>
+    </ul>
+    <p>Words such as epistemic index and telephone factor stay in the data. They do not appear on screen.</p>
+  </section>
+
+  <article class="dir" id="dir-a">
+    <div class="brief">
+      <p class="letter">A</p>
+      <h2>Evening column</h2>
+      <p class="thesis">You never leave the list. The story you tap unfolds in place, and the trail grows down from the headline. One column, left aligned, built for reading.</p>
+      <dl class="specs">
+        <div><dt>Type</dt><dd>Fraunces for headlines, Atkinson Hyperlegible for text</dd></div>
+        <div><dt>Color</dt><dd><span class="swatches"><i style="background:#F4F7F8"></i><i style="background:#1B2428"></i><i style="background:#0F6E56"></i><i style="background:#9F2D2D"></i><i style="background:#D5DEE2"></i></span></dd></div>
+        <div><dt>Move</dt><dd>Tap a headline. The claim, the dates, and the check open under it.</dd></div>
+      </dl>
+      <button class="use" type="button" data-pick="A">Use the evening column</button>
+    </div>
+    <div class="frame"><div class="da" id="app-a"></div></div>
+  </article>
+
+  <article class="dir" id="dir-b">
+    <div class="brief">
+      <p class="letter">B</p>
+      <h2>The desk</h2>
+      <p class="thesis">The list stays put while you read. Dates sit in a row above the story. Tap a date and that day’s words replace what you were reading, without leaving the headline.</p>
+      <dl class="specs">
+        <div><dt>Type</dt><dd>Familjen Grotesk for everything. Weight does the hierarchy.</dd></div>
+        <div><dt>Color</dt><dd><span class="swatches"><i style="background:#E4EADF"></i><i style="background:#F7F8F4"></i><i style="background:#1E2A22"></i><i style="background:#3D5A40"></i><i style="background:#8C3A2F"></i></span></dd></div>
+        <div><dt>Move</dt><dd>Keep today’s list on the left. Scrub the trail from the story.</dd></div>
+      </dl>
+      <button class="use" type="button" data-pick="B">Use the desk</button>
+    </div>
+    <div class="frame"><div class="db" id="app-b"></div></div>
+  </article>
+
+  <article class="dir" id="dir-c">
+    <div class="brief">
+      <p class="letter">C</p>
+      <h2>The thread</h2>
+      <p class="thesis">A phone column. You open one story, and history is a thread you pull downward. Knots are real events. A broken knot is a stretch where nothing was filed.</p>
+      <dl class="specs">
+        <div><dt>Type</dt><dd>Spectral, a face made for long reading. One family.</dd></div>
+        <div><dt>Color</dt><dd><span class="swatches"><i style="background:#E7EEF6"></i><i style="background:#F7F9FC"></i><i style="background:#172033"></i><i style="background:#1A4F8B"></i><i style="background:#C4552A"></i></span></dd></div>
+        <div><dt>Move</dt><dd>Open a story, scroll the thread, tap a knot for that day’s words.</dd></div>
+      </dl>
+      <button class="use" type="button" data-pick="C">Use the thread</button>
+    </div>
+    <div class="frame"><div class="dc" id="app-c"></div></div>
+  </article>
+</div>
+
+<script>
+const STORIES = [
+  {
+    id: "outage",
+    headline: "Headlines call the computer outage a cyberattack on hospitals and banks",
+    source: "Several outlets",
+    when: "This morning",
+    status: "changed",
+    statusText: "The telling changed",
+    oneLine: "The company described a bad update. The headlines describe an attack.",
+    trail: "Goes back to February",
+    note: "The outage is real. The company’s own note blames a faulty configuration file, not an attack. That cause was swapped out as the story spread.",
+    recordWho: "Company incident note",
+    recordText: "A logic flaw in a channel file caused a memory error on Windows systems running Sensor 7.11.",
+    reportedWho: "This morning's headlines",
+    reportedText: "A coordinated cyberattack paralyzed healthcare and finance.",
+    changedTitle: "The cause was swapped",
+    changedPlain: "A software fault became an attack. The file name and the sensor version disappeared.",
+    history: [
+      { id: "h1", when: "Today, 8:12", title: "Headlines call it an attack", source: "Several outlets", kind: "reported", kindText: "Reported", quote: "A coordinated cyberattack paralyzed healthcare and finance.", url: "https://www.reuters.com/technology/global-cyber-outage-grounds-flights-hits-media-financial-telecoms-2024-07-19/" },
+      { id: "h2", when: "Today, 4:40", title: "The company says a bad update caused the crash", source: "Company note", kind: "record", kindText: "On the record", quote: "A logic flaw in a channel file caused a memory error on Windows systems running Sensor 7.11.", url: "https://www.crowdstrike.com/blog/falcon-content-incident-remediation-and-guidance/" },
+      { id: "h3", when: "19 July, early", title: "Machines running Sensor 7.11 start failing", source: "Incident report", kind: "record", kindText: "On the record", quote: "Windows systems running Sensor 7.11 failed after a channel file was pushed.", url: "https://www.cisa.gov/news-events/alerts/2024/07/19/widespread-it-outage-caused-software-update" },
+      { id: "gap", when: "March to June", title: "Nothing public connects the February proposal to the July crash", source: "No filing found", kind: "gap", kindText: "Not enough yet", quote: "No public filing or news story in these months ties the design note to the outage." },
+      { id: "h4", when: "Three weeks earlier", title: "A security rule asked for a faster patch cycle", source: "Standards board", kind: "guess", kindText: "A reasonable guess", quote: "The dates line up with a faster patch rule. No filing says this rule caused the July crash.", url: "https://www.whitehouse.gov/wp-content/uploads/2022/01/M-22-09.pdf" },
+      { id: "h5", when: "February", title: "A design note let a driver load a file at startup", source: "Engineering proposal", kind: "record", kindText: "On the record", quote: "The proposal describes loading a configuration file into a driver at startup.", url: "https://learn.microsoft.com/en-us/windows-hardware/drivers/ifs/about-file-system-minifilter-drivers" }
+    ],
+    reaches: [
+      { who: "Airline crew systems", why: "Flights were held.", certainty: "Known from airport reports." },
+      { who: "Hospital record sync", why: "Some clinics switched to paper.", certainty: "Reported. Not a measured count." },
+      { who: "Customers on Sensor 7.11", why: "Named in the incident note.", certainty: "Stated by the company." }
+    ],
+    claim: "This was a state-sponsored cyberattack.",
+    verdictTitle: "A disagreement was found.",
+    verdict: "The company’s incident note describes a logic flaw in a configuration file. Nothing in this trail describes an attack.",
+    verdictSources: "Used the company incident note from 19 July, and the headlines from this morning."
+  },
+  {
+    id: "chips",
+    headline: "An export rule is being reported as a total ban on advanced chips",
+    source: "Financial Times",
+    when: "Today",
+    status: "changed",
+    statusText: "The telling changed",
+    oneLine: "The rule sets a license threshold. Headlines call it a ban.",
+    trail: "Goes back one month",
+    note: "A license threshold was widened into a ban. The rule still allows some chips under a limit. The headline does not say that.",
+    recordWho: "Commerce Department notice",
+    recordText: "Interconnect bandwidth above a set limit requires a validated export license.",
+    reportedWho: "Financial Times",
+    reportedText: "An expanded ban freezes next-generation datacenter shipments.",
+    changedTitle: "A threshold became a ban",
+    changedPlain: "A license you can apply for became a total freeze, and a performance limit became every advanced chip.",
+    history: [
+      { id: "c1", when: "Today", title: "Headlines call it a ban and a freeze", source: "Financial Times", kind: "reported", kindText: "Reported", quote: "Sweeping restrictions ground next-generation server deliveries.", url: "https://www.ft.com/content/semiconductors-ai-export-controls" },
+      { id: "c2", when: "3 days ago", title: "The Netherlands restricts servicing of advanced chipmaking tools", source: "Dutch government", kind: "record", kindText: "On the record", quote: "Export authorization is required for maintenance and spare parts on advanced systems.", url: "https://www.asml.com/en/news/press-releases/2024/dutch-export-control-update" },
+      { id: "c3", when: "2 weeks ago", title: "A chip design is revised to stay under the limit", source: "Technical report", kind: "record", kindText: "On the record", quote: "Memory configuration was reduced to stay under the density restriction.", url: "https://www.reuters.com/technology/nvidia-plans-launch-new-china-focused-ai-chip-2024-07-24/" },
+      { id: "c4", when: "1 month ago", title: "The Commerce Department sets the license threshold", source: "BIS notice", kind: "record", kindText: "On the record", quote: "Bandwidth above the published limit requires a license.", url: "https://www.bis.doc.gov/index.php/regulations/export-administration-regulations-ear" }
+    ],
+    reaches: [
+      { who: "Server assembly lines", why: "Shipments of affected boards were paused.", certainty: "Known from supply-chain reports." },
+      { who: "Domestic chip designers", why: "Trading jumped on the hope of replacement orders.", certainty: "Possible. The market move is real. The cause is a bet." },
+      { who: "Buyers above the threshold", why: "They now need a license.", certainty: "Stated in the rule." }
+    ],
+    claim: "All advanced AI chips are now banned worldwide.",
+    verdictTitle: "A disagreement was found.",
+    verdict: "The notice is a license threshold from one government, not a worldwide ban. Some chips under the limit are unchanged.",
+    verdictSources: "Used the Commerce Department notice and today’s headline."
+  },
+  {
+    id: "flights",
+    headline: "Airlines have grounded their fleets indefinitely",
+    source: "Aviation wire",
+    when: "Today",
+    status: "disagree",
+    statusText: "People disagree",
+    oneLine: "The directive names 171 aircraft and a short inspection. The headline says fleets are grounded indefinitely.",
+    trail: "Goes back three weeks",
+    note: "Flights were cancelled, and the directive is real. Coverage splits on how long and how wide. The directive says those aircraft return after the inspection.",
+    recordWho: "Emergency directive",
+    recordText: "Operators must inspect specific fittings before returning the affected aircraft to service. The inspection is a few hours.",
+    reportedWho: "Aviation wire",
+    reportedText: "Airlines cancel hundreds of flights indefinitely amid an emergency fleet grounding.",
+    changedTitle: "A defined check became an indefinite grounding",
+    changedPlain: "171 aircraft became entire fleets. A few hours of inspection became no return date.",
+    history: [
+      { id: "f1", when: "Today", title: "Headlines say fleets are grounded indefinitely", source: "Aviation wire", kind: "reported", kindText: "Reported", quote: "Carriers face an indefinite grounding under catastrophic safety failures.", url: "https://www.reuters.com/business/aerospace-defense/us-faa-orders-temporary-grounding-certain-boeing-737-max-9-aircraft-2024-01-06/" },
+      { id: "f2", when: "Yesterday", title: "A directive orders inspections before those aircraft fly", source: "Aviation authority", kind: "record", kindText: "On the record", quote: "Operators must inspect guide fittings before returning aircraft to passenger service.", url: "https://www.faa.gov/newsroom/updates-grounding-boeing-737-9-max-aircraft" },
+      { id: "f3", when: "1 week ago", title: "A quality filing describes a door plug removed without a second sign-off", source: "Safety board", kind: "record", kindText: "On the record", quote: "Records show the plug was removed for rivet work without a formal second sign-off.", url: "https://www.ntsb.gov/investigations/Pages/DCA24MA063.aspx" },
+      { id: "f4", when: "3 weeks ago", title: "The aviation authority starts a manufacturing audit", source: "Aviation authority", kind: "record", kindText: "On the record", quote: "The authority begins an audit of the manufacturing line after a door-plug incident.", url: "https://www.faa.gov/newsroom/updates-grounding-boeing-737-9-max-aircraft" }
+    ],
+    reaches: [
+      { who: "171 aircraft of one type", why: "Pulled for inspection.", certainty: "Stated by the airlines and the directive." },
+      { who: "Passengers on those flights", why: "Hundreds of flights were cancelled today.", certainty: "Known from airline schedules." },
+      { who: "Every other aircraft", why: "Not named in the directive.", certainty: "Possible only in the headline, not in the order." }
+    ],
+    claim: "Every airliner is grounded, with no return date.",
+    verdictTitle: "People disagree.",
+    verdict: "The directive and the airline notices describe an inspection and a return to service. The headline describes an indefinite grounding of fleets. Both are in circulation today.",
+    verdictSources: "Used yesterday’s directive and this morning’s headline."
+  },
+  {
+    id: "clinics",
+    headline: "Clinics may have switched to paper during the outage",
+    source: "Local reports",
+    when: "This afternoon",
+    status: "thin",
+    statusText: "Not enough yet",
+    oneLine: "A few reports mention paper records. There is no count, and no hospital filing.",
+    trail: "One day, then a gap",
+    note: "This is a lead, not a finding. The outage could have forced paper records. We do not have a number, a named hospital system, or a filing.",
+    recordWho: "No primary record yet",
+    recordText: "No hospital filing or company note in this trail counts how many clinics switched to paper.",
+    reportedWho: "Local report",
+    reportedText: "Some clinics said they charted on paper while systems were down.",
+    changedTitle: "There is nothing solid to compare yet",
+    changedPlain: "A handful of reports exist. They do not agree on a number, and none quotes a hospital record.",
+    history: [
+      { id: "p1", when: "This afternoon", title: "Local reports mention paper charting", source: "Local reports", kind: "reported", kindText: "Reported", quote: "Staff at some clinics said they wrote notes on paper during the outage." },
+      { id: "p2", when: "This morning", title: "Nothing filed by a hospital system", source: "No filing found", kind: "gap", kindText: "Not enough yet", quote: "No hospital filing, outage notice, or count turned up for this claim." }
+    ],
+    reaches: [
+      { who: "Clinics that lost the record system", why: "They would be the ones charting on paper.", certainty: "Possible. Not named yet." }
+    ],
+    claim: "Hospitals across the country switched to paper.",
+    verdictTitle: "Not enough yet.",
+    verdict: "A few local reports mention paper notes. No filing gives a count or names a hospital system. This claim is larger than the evidence.",
+    verdictSources: "Looked for a hospital filing and a company note. Neither is in the trail."
+  }
+];
+
+const ui = {
+  a: { q: "", filter: "all", open: "outage", focus: "h2", checked: false },
+  b: { q: "", filter: "all", open: "outage", focus: "h2", checked: false },
+  c: { q: "", filter: "all", open: "outage", focus: "h2", checked: false, screen: "story" }
+};
+
+const FILTERS = [
+  ["all", "All"],
+  ["changed", "The telling changed"],
+  ["disagree", "People disagree"],
+  ["matches", "Matches the record"],
+  ["thin", "Not enough yet"]
+];
+
+function esc(s) {
+  return String(s).replace(/[&<>"']/g, (c) => ({ "&": "&amp;", "<": "&lt;", ">": "&gt;", '"': "&quot;", "'": "&#39;" }[c]));
+}
+
+function sourceLink(step) {
+  if (!step.url) return "";
+  let host = step.url;
+  try { host = new URL(step.url).hostname.replace(/^www\./, ""); } catch (err) { host = step.source; }
+  return `<a class="src" href="${esc(step.url)}" target="_blank" rel="noopener noreferrer">${esc(host)}</a>`;
+}
+
+function visible(app) {
+  const q = ui[app].q.trim().toLowerCase();
+  return STORIES.filter((s) => {
+    if (ui[app].filter !== "all" && s.status !== ui[app].filter) return false;
+    if (!q) return true;
+    return (s.headline + " " + s.oneLine + " " + s.source).toLowerCase().includes(q);
+  });
+}
+
+function filters(app) {
+  return `<div class="filters" role="group" aria-label="Filter by what we know">${FILTERS.map(([id, label]) =>
+    `<button type="button" data-act="filter" data-app="${app}" data-id="${id}" aria-pressed="${ui[app].filter === id}">${label}</button>`
+  ).join("")}</div>`;
+}
+
+function search(app) {
+  return `<input id="search-${app}" type="search" placeholder="Search today’s headlines" aria-label="Search today’s headlines" value="${esc(ui[app].q)}" data-app="${app}">`;
+}
+
+function emptyCopy() {
+  return `<p class="empty">Nothing in today’s list is in that state. Open a story anyway: a step inside it can still match the record, and a quiet stretch means not enough was filed.</p>`;
+}
+
+function note(s) {
+  return `<div class="note"><p><strong>Reading note.</strong> ${esc(s.note)}</p></div>`;
+}
+
+function pair(s) {
+  return `<div class="pair">
+    <div><h4>What the record says</h4><p class="meta">${esc(s.recordWho)}</p><blockquote>${esc(s.recordText)}</blockquote></div>
+    <div><h4>What the headline says</h4><p class="meta">${esc(s.reportedWho)}</p><blockquote>${esc(s.reportedText)}</blockquote></div>
+  </div>
+  <p class="changed-line"><strong>${esc(s.changedTitle)}.</strong> ${esc(s.changedPlain)}</p>`;
+}
+
+function reaches(s) {
+  return `<div class="reach"><h4>Who this reaches</h4><ul>${s.reaches.map((r) =>
+    `<li><strong>${esc(r.who)}.</strong> ${esc(r.why)} ${esc(r.certainty)}</li>`
+  ).join("")}</ul></div>`;
+}
+
+function check(app, s) {
+  const on = ui[app].checked && ui[app].open === s.id;
+  return `<div class="check">
+    <h4>Check this claim</h4>
+    <p>${esc(s.claim)}</p>
+    <button type="button" data-act="check" data-app="${app}">${on ? "Hide this check" : "Check this claim"}</button>
+    ${on ? `<div class="verdict"><p><strong>${esc(s.verdictTitle)}</strong> ${esc(s.verdict)}</p><p class="meta">${esc(s.verdictSources)} This check only reads sources already in the trail.</p></div>` : ""}
+  </div>`;
+}
+
+function renderA() {
+  const state = ui.a;
+  const rows = visible("a");
+  const open = STORIES.find((s) => s.id === state.open);
+  const list = rows.map((s) => {
+    if (s.id === state.open) {
+      return `<article class="open">
+        <p class="meta">${esc(s.when)}, ${esc(s.source)}</p>
+        <p class="status ${esc(s.status)}">${esc(s.statusText)}</p>
+        <h3>${esc(s.headline)}</h3>
+        ${note(s)}
+        ${pair(s)}
+        <div class="trail"><h4>How we got here</h4>
+          ${s.history.map((h) => {
+            const shown = state.focus === h.id;
+            return `<div class="step ${h.kind === "gap" ? "gap" : ""}">
+              <div class="when">
+                <button type="button" class="when-btn" data-act="focus" data-app="a" data-id="${h.id}" aria-expanded="${shown}">${esc(h.when)}</button>
+                ${sourceLink(h)}
+              </div>
+              <button type="button" class="step-body" data-act="focus" data-app="a" data-id="${h.id}" aria-expanded="${shown}">
+                <strong>${esc(h.title)}</strong><br><span class="meta"><span class="status ${h.kind === "record" ? "record" : h.kind === "gap" ? "thin" : "disagree"}">${esc(h.kindText)}</span><br>${esc(h.source)}</span>
+                ${shown ? `<span class="quote">${esc(h.quote)}</span>` : ""}
+              </button>
+            </div>`;
+          }).join("")}
+        </div>
+        ${reaches(s)}
+        ${check("a", s)}
+        <p class="meta" style="margin-top:.8rem"><button type="button" class="back" data-act="close" data-app="a">Close this story</button></p>
+      </article>`;
+    }
+    return `<button type="button" class="row" data-act="open" data-app="a" data-id="${s.id}">
+      <p class="meta">${esc(s.when)}, ${esc(s.source)}</p>
+      <p class="meta">${esc(s.trail)}</p>
+      <p class="status ${esc(s.status)}">${esc(s.statusText)}</p>
+      <h3>${esc(s.headline)}</h3>
+      <p class="meta">${esc(s.oneLine)}</p>
+    </button>`;
+  }).join("");
+  document.getElementById("app-a").innerHTML = `<div class="sheet">
+    <div class="brand"><strong>The Paper Trail</strong><span>Saturday 21 November</span></div>
+    <div class="tools">${search("a")}</div>
+    ${filters("a")}
+    ${rows.length ? list : emptyCopy()}
+    ${open && !rows.some((s) => s.id === open.id) ? "" : ""}
+  </div>`;
+}
+
+function renderB() {
+  const state = ui.b;
+  const rows = visible("b");
+  let current = STORIES.find((s) => s.id === state.open) || null;
+  if (!current || !rows.some((s) => s.id === current.id)) {
+    current = rows[0] || null;
+    state.open = current ? current.id : state.open;
+  }
+  if (!current) {
+    document.getElementById("app-b").innerHTML = `<div class="split">
+      <div class="list"><p class="brand">Today</p>${search("b")}${filters("b")}${emptyCopy()}</div>
+      <article class="read"><p class="empty">Pick a story from today, or clear the filter.</p></article>
+    </div>`;
+    return;
+  }
+  const step = current.history.find((h) => h.id === state.focus) || current.history[0];
+  const items = rows.length ? rows.map((s) => `<button type="button" class="item" data-act="open" data-app="b" data-id="${s.id}" ${s.id === current.id ? 'aria-current="true"' : ""}>
+      <p class="status ${esc(s.status)}">${esc(s.statusText)}</p>
+      <h3>${esc(s.headline)}</h3>
+      <p class="meta">${esc(s.source)}, ${esc(s.when)}</p>
+    </button>`).join("") : emptyCopy();
+  document.getElementById("app-b").innerHTML = `<div class="split">
+    <div class="list">
+      <p class="brand">Today</p>
+      ${search("b")}
+      ${filters("b")}
+      <div style="margin-top:.6rem">${items}</div>
+    </div>
+    <article class="read">
+      <p class="meta">${esc(current.when)}, ${esc(current.source)}</p>
+      <p class="status ${esc(current.status)}">${esc(current.statusText)}</p>
+      <h3>${esc(current.headline)}</h3>
+      ${note(current)}
+      <div class="trail">
+        <h4>How we got here</h4>
+        <p class="meta">${esc(current.trail)}. Choose a date to read what was known then.</p>
+        <div class="dates">${current.history.map((h) =>
+          `<span class="date-pair"><button type="button" data-act="focus" data-app="b" data-id="${h.id}" aria-pressed="${step.id === h.id}">${esc(h.when)}</button>${sourceLink(h)}</span>`
+        ).join("")}</div>
+        <p><strong>${esc(step.title)}</strong></p>
+        <p class="meta"><span class="status ${step.kind === "record" ? "record" : "disagree"}">${esc(step.kindText)}</span><br>${esc(step.source)}</p>
+        <blockquote>${esc(step.quote)}</blockquote>
+      </div>
+      ${pair(current)}
+      ${reaches(current)}
+      ${check("b", current)}
+    </article>
+  </div>`;
+}
+
+function renderC() {
+  const state = ui.c;
+  const rows = visible("c");
+  if (state.screen !== "story") {
+    const items = rows.length ? rows.map((s) => `      <button type="button" class="item" data-act="open" data-app="c" data-id="${s.id}">
+        <p class="meta">${esc(s.when)}, ${esc(s.source)}</p>
+        <p class="status ${esc(s.status)}">${esc(s.statusText)}</p>
+        <h3>${esc(s.headline)}</h3>
+        <p class="meta">${esc(s.oneLine)}</p>
+      </button>`).join("") : emptyCopy();
+    document.getElementById("app-c").innerHTML = `<div class="phone">
+      <div class="brand"><strong>The Paper Trail</strong><span class="meta">Today</span></div>
+      ${search("c")}
+      ${filters("c")}
+      ${items}
+    </div>`;
+    return;
+  }
+  const s = STORIES.find((x) => x.id === state.open) || STORIES[0];
+  document.getElementById("app-c").innerHTML = `<div class="phone">
+    <button type="button" class="back" data-act="back" data-app="c">Today</button>
+    <p class="meta">${esc(s.when)}, ${esc(s.source)}</p>
+    <p class="status ${esc(s.status)}">${esc(s.statusText)}</p>
+    <h3 class="story-h">${esc(s.headline)}</h3>
+    ${note(s)}
+    ${pair(s)}
+    <div class="trail"><h4>How we got here</h4>
+      <ol class="thread">${s.history.map((h) => {
+        const shown = state.focus === h.id;
+        return `<li><div class="knot ${h.kind === "gap" ? "gap" : ""}">
+          <span class="rail" aria-hidden="true"><span class="dot"></span></span>
+          <span class="body">
+            <span class="when-line"><button type="button" class="when-btn" data-act="focus" data-app="c" data-id="${h.id}" aria-expanded="${shown}">${esc(h.when)}</button>${sourceLink(h)}</span>
+            <button type="button" class="knot-btn" data-act="focus" data-app="c" data-id="${h.id}" aria-expanded="${shown}"><strong>${esc(h.title)}</strong><br>
+            <span class="meta"><span class="status ${h.kind === "record" ? "record" : "disagree"}">${esc(h.kindText)}</span><br>${esc(h.source)}</span>
+            ${shown ? `<span class="quote">${esc(h.quote)}</span>` : ""}</button>
+          </span>
+        </div></li>`;
+      }).join("")}</ol>
+    </div>
+    ${reaches(s)}
+    ${check("c", s)}
+  </div>`;
+}
+
+function render(focusId) {
+  renderA();
+  renderB();
+  renderC();
+  if (focusId) {
+    const el = document.getElementById(focusId);
+    if (el) {
+      el.focus();
+      const n = el.value.length;
+      if (el.setSelectionRange) el.setSelectionRange(n, n);
+    }
+  }
+}
+
+document.body.addEventListener("click", (e) => {
+  if (e.target.closest("a.src")) return;
+  const pick = e.target.closest("[data-pick]");
+  if (pick) {
+    const letter = pick.getAttribute("data-pick");
+    document.querySelectorAll(".dir").forEach((d) => d.classList.toggle("chosen", d.id === "dir-" + letter.toLowerCase()));
+    const names = { A: "Evening column", B: "The desk", C: "The thread" };
+    const noteEl = document.getElementById("pick-note");
+    noteEl.hidden = false;
+    noteEl.textContent = names[letter] + " is marked. Tell me in chat to build it, or name a mix, such as the desk’s list with the thread’s history.";
+    noteEl.scrollIntoView({ behavior: "smooth", block: "center" });
+    return;
+  }
+  const btn = e.target.closest("[data-act]");
+  if (!btn) return;
+  const app = btn.getAttribute("data-app");
+  const act = btn.getAttribute("data-act");
+  const id = btn.getAttribute("data-id");
+  const state = ui[app];
+  if (act === "filter") state.filter = id;
+  if (act === "open") {
+    state.open = id;
+    state.checked = false;
+    const story = STORIES.find((s) => s.id === id);
+    state.focus = story.history.find((h) => h.kind === "record")?.id || story.history[0].id;
+    if (app === "c") state.screen = "story";
+  }
+  if (act === "close") state.open = null;
+  if (act === "back") state.screen = "list";
+  if (act === "focus") state.focus = state.focus === id ? null : id;
+  if (act === "check") state.checked = !state.checked;
+  render();
+});
+
+document.body.addEventListener("input", (e) => {
+  const input = e.target.closest("input[type='search']");
+  if (!input) return;
+  const app = input.getAttribute("data-app");
+  ui[app].q = input.value;
+  render("search-" + app);
+});
+
+render();
+</script>
+</body>
+</html>

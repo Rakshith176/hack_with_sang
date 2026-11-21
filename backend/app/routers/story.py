@@ -1,11 +1,17 @@
+import ipaddress
 import json
+import re
+from datetime import datetime
+from html import unescape
 from pathlib import Path
 from typing import List, Optional
+from urllib.parse import urlparse
 from fastapi import APIRouter, HTTPException, Query
 from pydantic import BaseModel
+import httpx
 from app.models.schemas import StoryGraph, DrillDeeperRequest, GraphNode, GraphEdge, SourceEvidence, ClaimDriftRecord, ClaimDetail
-from app.services.serp_service import search_historical_archive, search_google_news
-from app.services.gemini_service import synthesize_lineage_edges, ALLOWED_RELATIONSHIPS
+from app.services.serp_service import extract_page_content, search_historical_archive, search_google_news
+from app.services.gemini_service import explain_misalignment, synthesize_lineage_edges, ALLOWED_RELATIONSHIPS
 
 router = APIRouter(prefix="/api/story", tags=["story"])
 
@@ -25,6 +31,7 @@ class AnalyzeRequest(BaseModel):
     snippet: Optional[str] = ""
     link: Optional[str] = ""
     source: Optional[str] = ""
+    date: Optional[str] = ""
 
 @router.get("/trending", response_model=List[TrendingNewsItem])
 async def get_trending_news(q: str = Query("technology OR business", description="Search topic")):
@@ -46,6 +53,314 @@ async def get_trending_news(q: str = Query("technology OR business", description
             thumbnail=item.get("thumbnail")
         ))
     return items
+
+class ArticleBlock(BaseModel):
+    kind: str
+    text: str = ""
+    url: str = ""
+
+class ArticleText(BaseModel):
+    url: str
+    blocks: List[ArticleBlock]
+    limited: bool = False
+
+def _published_at(value: str) -> Optional[datetime]:
+    text = re.sub(r"\s*UTC$", "", value.strip(), flags=re.I)
+    for fmt in (
+        "%m/%d/%Y, %I:%M %p, %z",
+        "%m/%d/%Y, %I:%M %p",
+        "%Y-%m-%d %H:%M",
+        "%Y-%m-%d",
+    ):
+        try:
+            return datetime.strptime(text, fmt)
+        except ValueError:
+            continue
+    return None
+
+
+def _published_key(value: str) -> tuple:
+    when = _published_at(value)
+    return (when is None, when or datetime.max)
+
+
+def _public_article_url(url: str) -> bool:
+    parsed = urlparse(url)
+    if parsed.scheme not in {"http", "https"} or not parsed.hostname:
+        return False
+    host = parsed.hostname.lower().rstrip(".")
+    if host in {"localhost", "127.0.0.1", "::1"} or host.endswith(".local"):
+        return False
+    try:
+        address = ipaddress.ip_address(host)
+    except ValueError:
+        return True
+    return not (address.is_private or address.is_loopback or address.is_link_local or address.is_reserved)
+
+_IMAGE_RE = re.compile(r"!\[([^\]]*)\]\((https?://[^)\s]+)(?:\s+\"[^\"]*\")?\)")
+_JUNK_IMAGE = re.compile(r"newsletter|signup|sign-up|logo|icon|pixel|spacer|badge|favicon|tracking|\.svg|1x1", re.I)
+_CREDIT = re.compile(r"getty|photo|photograph|caption|associated press|\bap\b|reuters|afp|bloomberg", re.I)
+
+def _clean_inline(value: str) -> str:
+    text = _IMAGE_RE.sub("", value)
+    text = re.sub(r"\[([^\]]+)\]\([^)]+\)", r"\1", text)
+    text = re.sub(r"^\s{0,3}#{1,6}\s*", "", text, flags=re.M)
+    text = re.sub(r"\*\*([^*]+)\*\*", r"\1", text)
+    text = re.sub(r"\*([^*]+)\*", r"\1", text)
+    text = re.sub(r"`([^`]+)`", r"\1", text)
+    return re.sub(r"\s+", " ", text).strip()
+
+def _junk_image(url: str) -> bool:
+    return bool(_JUNK_IMAGE.search(url))
+
+def _caption(text: str) -> bool:
+    if not text or len(text) > 220:
+        return False
+    return len(text) < 160 or bool(_CREDIT.search(text))
+
+def _junk_paragraph(text: str) -> bool:
+    lowered = text.lower()
+    return lowered.startswith("subscribe") or "sign up" in lowered or lowered.startswith("advertisement")
+
+_STOP_HEADING = re.compile(
+    r"^(what readers are saying|most read|related( articles| coverage| stories)?|comments|newsletter|sign up|subscribe|more from|recommended|you might also|you may also|advertisement|about the author)\b",
+    re.I,
+)
+_LIST_OR_HEAD = re.compile(r"^(#{1,6})\s+(.*)$|^[-*]\s+(.*)$")
+
+def _table_cells(line: str) -> Optional[str]:
+    if line.count("|") < 2:
+        return None
+    cells = [cell.strip() for cell in line.strip().strip("|").split("|")]
+    if not any(cells):
+        return None
+    if all(not cell or set(cell) <= set("-: ") for cell in cells):
+        return ""
+    return " · ".join(cell for cell in cells if cell)
+_BROWSER_UA = "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/131.0.0.0 Safari/537.36"
+
+def _cut_chrome(raw: str) -> str:
+    kept: List[str] = []
+    for line in raw.splitlines():
+        heading = re.sub(r"^#+\s*", "", line.strip())
+        if heading and _STOP_HEADING.match(heading):
+            break
+        kept.append(line)
+    return "\n".join(kept)
+
+def _take_line(blocks: List[dict], kind: str, text: str, pending: Optional[dict]) -> Optional[dict]:
+    cleaned = _clean_inline(text)
+    if not cleaned or _junk_paragraph(cleaned):
+        return pending
+    if kind == "heading":
+        if pending is not None:
+            blocks.append(pending)
+            pending = None
+        if len(cleaned) >= 8:
+            blocks.append({"kind": "heading", "text": cleaned, "url": ""})
+        return pending
+    if pending is not None and _caption(cleaned):
+        pending["text"] = cleaned
+        blocks.append(pending)
+        return None
+    if pending is not None:
+        blocks.append(pending)
+        pending = None
+    minimum = 8 if kind == "item" else 40
+    if len(cleaned) >= minimum:
+        blocks.append({"kind": "paragraph", "text": cleaned, "url": ""})
+    return pending
+
+def _feed_text(blocks: List[dict], chunk: str, pending: Optional[dict]) -> Optional[dict]:
+    for part in re.split(r"\n\s*\n", chunk):
+        prose: List[str] = []
+
+        def flush() -> None:
+            nonlocal pending
+            if prose:
+                pending = _take_line(blocks, "paragraph", " ".join(prose), pending)
+                prose.clear()
+
+        for line in part.splitlines():
+            stripped = line.strip()
+            cells = _table_cells(stripped)
+            if cells is not None:
+                flush()
+                if cells:
+                    pending = _take_line(blocks, "item", cells, pending)
+                continue
+            match = _LIST_OR_HEAD.match(stripped)
+            if not match:
+                if stripped:
+                    prose.append(stripped)
+                continue
+            flush()
+            if match.group(1):
+                pending = _take_line(blocks, "heading", match.group(2), pending)
+            else:
+                pending = _take_line(blocks, "item", match.group(3) or "", pending)
+        flush()
+    return pending
+
+def _blocks_from_markdown(raw: str) -> List[dict]:
+    raw = _cut_chrome(raw)
+    blocks: List[dict] = []
+    pending: Optional[dict] = None
+    cursor = 0
+    for match in _IMAGE_RE.finditer(raw):
+        pending = _feed_text(blocks, raw[cursor:match.start()], pending)
+        if pending is not None:
+            blocks.append(pending)
+            pending = None
+        url = match.group(2)
+        if not _junk_image(url):
+            pending = {"kind": "image", "text": _clean_inline(match.group(1)), "url": url}
+        cursor = match.end()
+    pending = _feed_text(blocks, raw[cursor:], pending)
+    if pending is not None:
+        blocks.append(pending)
+    return blocks[:120]
+
+def _article_html(html: str) -> str:
+    parts = re.findall(r"(?is)<article\b[^>]*>(.*?)</article>", html)
+    if parts:
+        return max(parts, key=lambda part: len(re.findall(r"(?is)<p\b", part)))
+    main = re.search(r"(?is)<main\b[^>]*>(.*?)</main>", html)
+    return main.group(1) if main else html
+
+def _blocks_from_html(html: str) -> List[dict]:
+    region = _article_html(html)
+    without_chrome = re.sub(r"(?is)<(script|style|noscript|nav|footer|header|form|aside|svg).*?</\1>", " ", region)
+    token = re.compile(
+        r'(?is)<img[^>]+src=["\']([^"\']+)["\'][^>]*>|<figcaption[^>]*>(.*?)</figcaption>|<h[1-3][^>]*>(.*?)</h[1-3]>|<li[^>]*>(.*?)</li>|<p[^>]*>(.*?)</p>'
+    )
+    blocks: List[dict] = []
+    pending: Optional[dict] = None
+    for match in token.finditer(without_chrome):
+        image_url, caption_html, heading_html, item_html, paragraph_html = match.groups()
+        if image_url:
+            if pending is not None:
+                blocks.append(pending)
+            pending = None if _junk_image(image_url) else {"kind": "image", "text": "", "url": unescape(image_url)}
+            continue
+        raw = caption_html if caption_html is not None else heading_html if heading_html is not None else item_html if item_html is not None else paragraph_html
+        text = _clean_inline(unescape(re.sub(r"(?is)<[^>]+>", " ", raw or "")))
+        if not text or _junk_paragraph(text):
+            continue
+        if heading_html is not None and _STOP_HEADING.match(text):
+            break
+        if pending is not None and (caption_html is not None or _caption(text)):
+            pending["text"] = text
+            blocks.append(pending)
+            pending = None
+            continue
+        if pending is not None:
+            blocks.append(pending)
+            pending = None
+        if heading_html is not None and len(text) >= 8:
+            blocks.append({"kind": "heading", "text": text, "url": ""})
+        elif caption_html is None and len(text) >= (8 if item_html is not None else 40):
+            blocks.append({"kind": "paragraph", "text": text, "url": ""})
+    if pending is not None:
+        blocks.append(pending)
+    return blocks[:120]
+
+def _blocks_from_jsonld(html: str) -> List[dict]:
+    longest = ""
+    for match in re.finditer(r'(?is)<script[^>]+type=["\']application/ld\+json["\'][^>]*>(.*?)</script>', html):
+        try:
+            payload = json.loads(match.group(1))
+        except json.JSONDecodeError:
+            continue
+        stack = payload if isinstance(payload, list) else [payload]
+        while stack:
+            item = stack.pop()
+            if isinstance(item, list):
+                stack.extend(item)
+                continue
+            if not isinstance(item, dict):
+                continue
+            body = item.get("articleBody")
+            if isinstance(body, str) and len(body) > len(longest):
+                longest = body
+            graph = item.get("@graph")
+            if isinstance(graph, list):
+                stack.extend(graph)
+    if len(longest) < 80:
+        return []
+    text = re.sub(r"\s+", " ", unescape(longest)).strip()
+    sentences = re.split(r"(?<=[.!?])\s+(?=[A-Z“\"])", text)
+    blocks: List[dict] = []
+    buf = ""
+    for sentence in sentences:
+        if buf and len(buf) + len(sentence) > 480:
+            blocks.append({"kind": "paragraph", "text": buf, "url": ""})
+            buf = sentence
+        else:
+            buf = f"{buf} {sentence}".strip()
+    if buf:
+        blocks.append({"kind": "paragraph", "text": buf, "url": ""})
+    return blocks[:120]
+
+def _mass(blocks: List[dict]) -> int:
+    return sum(len(block.get("text") or "") for block in blocks if block.get("kind") in {"paragraph", "heading"})
+
+def _access_free(payload: dict) -> Optional[bool]:
+    for item in payload.get("json_ld") or []:
+        if isinstance(item, dict) and "isAccessibleForFree" in item:
+            return bool(item.get("isAccessibleForFree"))
+    return None
+
+def _is_limited(blocks: List[dict], free: Optional[bool]) -> bool:
+    paragraphs = [block for block in blocks if block.get("kind") == "paragraph"]
+    mass = sum(len(block.get("text") or "") for block in paragraphs)
+    if free is False and mass < 1800:
+        return True
+    if free is True:
+        return False
+    return len(paragraphs) < 2 or mass < 500
+
+async def _fetch_html_blocks(url: str) -> List[dict]:
+    try:
+        async with httpx.AsyncClient(timeout=12.0, follow_redirects=True) as client:
+            response = await client.get(url, headers={"User-Agent": _BROWSER_UA, "Accept": "text/html"})
+    except httpx.HTTPError:
+        return []
+    if response.status_code != 200 or "html" not in response.headers.get("content-type", ""):
+        return []
+    html_blocks = _blocks_from_html(response.text)
+    json_blocks = _blocks_from_jsonld(response.text)
+    return json_blocks if _mass(json_blocks) > _mass(html_blocks) else html_blocks
+
+def _blocks_from_extract(payload: dict) -> List[dict]:
+    for key in ("markdown", "content", "text", "extracted_text"):
+        value = payload.get(key)
+        if isinstance(value, str):
+            blocks = _blocks_from_markdown(value)
+            if blocks:
+                return blocks
+    return []
+
+@router.get("/article", response_model=ArticleText)
+async def get_article_text(url: str = Query(..., description="Public article URL")):
+    """Reads the article behind a headline so the supporting factors sit next to the piece itself."""
+    if not _public_article_url(url):
+        raise HTTPException(status_code=400, detail="That page cannot be read from here.")
+
+    extracted = await extract_page_content(url)
+    usable = isinstance(extracted, dict) and "error" not in extracted
+    free = _access_free(extracted) if usable else None
+    blocks = _blocks_from_extract(extracted) if usable else []
+    if _mass(blocks) < 1800:
+        html_blocks = await _fetch_html_blocks(url)
+        if _mass(html_blocks) > _mass(blocks):
+            blocks = html_blocks
+
+    return ArticleText(
+        url=url,
+        blocks=[ArticleBlock(**block) for block in blocks],
+        limited=_is_limited(blocks, free),
+    )
 
 @router.get("/catalog")
 async def get_stories_catalog():
@@ -119,6 +434,7 @@ async def analyze_live_headline(req: AnalyzeRequest):
         item for item in news_items 
         if item.get("title", "").strip().lower() != req.title.strip().lower()
     ][:4]
+    antecedent_articles.sort(key=lambda item: _published_key(item.get("date") or ""))
     
     nodes = []
     edges = []
@@ -163,7 +479,7 @@ async def analyze_live_headline(req: AnalyzeRequest):
             depth_index=0,
             year=2024,
             title=req.title,
-            timestamp="Breaking Today",
+            timestamp=req.date or "Breaking Today",
             summary=req.snippet or req.title,
             source=SourceEvidence(
                 outlet_or_issuer=req.source or "Live News Syndication",
@@ -278,22 +594,41 @@ async def analyze_live_headline(req: AnalyzeRequest):
             relevancy_percent=88
         ))
         
+        earlier = antecedent_articles[0]
+        earlier_source = earlier.get("source") or {}
+        earlier_name = earlier_source.get("name") if isinstance(earlier_source, dict) else "Earlier report"
+        earlier_when = earlier.get("date") or "Earlier"
+        earlier_text = (earlier.get("snippet") or "").strip()
+        if not earlier_text or earlier_text == "No summary available":
+            earlier_text = earlier.get("title") or "The earlier report."
+        headline_when = req.date or "Breaking Today"
+        headline_name = req.source or "The headline"
+        reason = await explain_misalignment(
+            earlier_name or "Earlier report",
+            earlier_when,
+            earlier_text,
+            headline_name,
+            headline_when,
+            req.title,
+        )
+        part = (reason or {}).get("part") or "What the headline claims"
+        why = (reason or {}).get("why") or (
+            f"The headline does not match {earlier_name or 'the earlier report'}. "
+            f"The earlier account and this headline describe the event differently."
+        )
         drift = ClaimDriftRecord(
             claim_id="serp_drift_1",
-            subject="Scale and Permanence of Disruption",
+            subject=part,
             original_claim=ClaimDetail(
-                source_name=antecedent_articles[0].get("source", {}).get("name", "Prior Report"),
-                raw_text=antecedent_articles[0].get("snippet", "Regulatory adjustments announced for specific application tiers."),
-                hedges=["phased implementation", "subject to regulatory review"]
+                source_name=earlier_name or "Earlier report",
+                raw_text=earlier_text,
             ),
             viral_claim=ClaimDetail(
-                source_name=req.source or "Viral Headline",
+                source_name=headline_name,
                 raw_text=req.title,
-                hedges=[],
-                metric_value="Complete Abandonment"
             ),
             mutation_type="scope_expanded",
-            drift_explanation="A targeted administrative or backlog friction point was sensationalized into a permanent, total industry collapse.",
+            drift_explanation=why,
             telephone_factor=0.91
         )
         
