@@ -5,6 +5,7 @@ from fastapi import APIRouter, HTTPException, Query
 from pydantic import BaseModel
 from app.models.schemas import StoryGraph, DrillDeeperRequest, GraphNode, GraphEdge, SourceEvidence, ClaimDriftRecord, ClaimDetail
 from app.services.serp_service import search_historical_archive, search_google_news
+from app.services.gemini_service import synthesize_lineage_edges
 
 router = APIRouter(prefix="/api/story", tags=["story"])
 
@@ -181,13 +182,28 @@ async def analyze_live_headline(req: AnalyzeRequest):
             ("Immediate Catalyst", 98, "The critical tipping point action that directly triggered the breaking public disclosures.")
         ]
         
+        # Ask Gemini for topic-specific connective tissue; falls back to the generic ladder
+        gemini_edges = await synthesize_lineage_edges(req.title, antecedent_articles)
+
         for i in range(len(nodes) - 1):
             rel_label, rel_pct, conn_tissue = relevancy_ladder[min(i, len(relevancy_ladder)-1)]
+            relationship = "triggered" if i == len(nodes) - 2 else "escalated"
+
+            if gemini_edges and i < len(gemini_edges):
+                suggestion = gemini_edges[i] or {}
+                rel_label = str(suggestion.get("relevancy_label") or rel_label)
+                conn_tissue = str(suggestion.get("connective_tissue") or conn_tissue)
+                relationship = str(suggestion.get("relationship") or relationship)
+                try:
+                    rel_pct = max(60, min(99, int(suggestion.get("relevancy_percent", rel_pct))))
+                except (TypeError, ValueError):
+                    pass
+
             edges.append(GraphEdge(
                 id=f"serp_edge_{i}",
                 source=nodes[i].id,
                 target=nodes[i+1].id,
-                relationship="triggered" if i == len(nodes) - 2 else "escalated",
+                relationship=relationship,
                 is_solid=True,
                 evidence_quote=f"Causal link: {nodes[i].title} directly informed and escalated {nodes[i+1].title}.",
                 confidence_score=rel_pct / 100.0,

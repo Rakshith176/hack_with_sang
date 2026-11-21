@@ -144,7 +144,18 @@ export const NewsDiscoveryModal: React.FC<NewsDiscoveryModalProps> = ({
                 key={item.id}
                 className="p-4 rounded-xl bg-gray-900 border border-gray-800 hover:border-blue-600/70 transition-all flex flex-col md:flex-row md:items-center justify-between gap-4"
               >
-                <div className="flex-1">
+                <div className="flex items-start gap-3 flex-1 min-w-0">
+                  {item.thumbnail && (
+                    <img
+                      src={item.thumbnail}
+                      alt=""
+                      loading="lazy"
+                      referrerPolicy="no-referrer"
+                      onError={(e) => { (e.currentTarget as HTMLImageElement).style.display = 'none'; }}
+                      className="hidden sm:block w-24 h-16 shrink-0 rounded-lg object-cover bg-gray-800 border border-gray-700"
+                    />
+                  )}
+                  <div className="flex-1 min-w-0">
                   <div className="flex items-center gap-2 text-[11px] font-mono text-gray-400 mb-1">
                     <span className="font-bold text-blue-400">{item.source_name}</span>
                     <span>&bull;</span>
@@ -154,6 +165,7 @@ export const NewsDiscoveryModal: React.FC<NewsDiscoveryModalProps> = ({
                   </div>
                   <h4 className="text-sm font-bold text-white mb-1.5 leading-snug">{item.title}</h4>
                   <p className="text-xs text-gray-300 line-clamp-2 leading-relaxed">{item.snippet}</p>
+                  </div>
                 </div>
 
                 <div className="flex items-center gap-2 shrink-0">
