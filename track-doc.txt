@@ -1,0 +1,51 @@
+﻿Beyond 9TO5 Buildathon
+Problem Statements
+Welcome to the Beyond 9TO5 Buildathon. Participants are encouraged to develop innovative solutions using cutting-edge APIs and developer tools to address real-world challenges.
+Explore the following tracks, leverage the available resources, and build impactful applications, AI-powered tools, agents, or integrations.
+
+
+________________
+Track 1: Best Use of SerpApi
+Build innovative solutions powered by real-time search data.
+Leverage SerpApi's APIs to develop applications that utilize data from search engines and other online platforms. Participants can use any of SerpApi's APIs, including Web Search, Google Maps, Shopping, Travel, News, Finance, Jobs, Academic Research, and more.
+Participants may also use the SerpApi Extract API to retrieve and process content directly from web pages.
+Projects from any domain are eligible, provided they demonstrate a meaningful and innovative use of SerpApi's APIs.
+Resources:
+* API Documentation: https://serpapi.com/search-engine-apis
+Bonus: 500 Extra Free SerpApi Credits
+Participants can claim 500 additional free SerpApi credits to support their development.
+Credit Redemption Links:
+* Mumbai Participants: https://serpapi.com/beyond9to5mumbai500
+* Bengaluru Participants: https://serpapi.com/beyond9to5blr
+How to Claim:
+1. Visit the coupon link for your respective city.
+2. Log in to your SerpApi account.
+3. Click on Redeem to claim your 500 free credits.
+________________
+
+
+Track 2: You.com: Build with live, cited web data
+Develop intelligent applications powered by real-time web data.
+Build an AI-powered agent, application, or integration using You.com APIs to retrieve live information from the web and deliver reliable, citation-backed responses.
+Your solution should demonstrate how real-time web data can enhance AI applications, improve decision-making, address information gaps, or provide valuable insights to users.
+Potential applications include AI research assistants, intelligent search tools, data-driven agents, knowledge platforms, and other innovative solutions combining artificial intelligence with live web information.
+Resources:
+* You.com API Documentation: https://you.com/docs
+________________
+
+
+Track 3: Nexconn Chat SDK 
+Integrate real-time communication capabilities into your project.
+Use the Nexconn Chat SDK to incorporate real-time messaging and interactive communication features into your application.
+Develop solutions that leverage chat functionality, collaborative experiences, communication-based workflows, or interactive features to enhance user engagement.
+Participants are encouraged to explore use cases beyond traditional chat applications and build innovative products, collaborative tools, or solutions that make digital experiences more connected.
+Resources:
+* Nexconn Chat SDK: https://www.nexconn.ai/free-chat-api?utm_source=offline
+* Integration Tutorial: https://www.youtube.com/watch?v=4rmyaAs1Qxg
+________________
+
+
+
+Build. Innovate. Go Beyond.
+Choose a track, explore the available tools, and develop a solution that addresses a real-world problem. Participants are encouraged to think creatively and make meaningful use of the sponsor technologies while building impactful projects.
+Your 9TO5 Ends. Your Building Begins.

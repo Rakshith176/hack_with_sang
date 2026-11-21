@@ -1,0 +1,353 @@
+{
+  "story_id": "flagship_crowdstrike_2024",
+  "focus_headline": "Worldwide IT Outage Paralyzes Critical Infrastructure Indefinitely Under Suspected Hostile Cyber Crisis",
+  "summary": "Multi-year retrospective forensic DAG tracing the global outage from 2021 Ring-0 kernel telemetry RFCs to July 2024 dynamic channel definitions, auditing the headline 'Telephone Game' and mapping immediate systemic casualties.",
+  "epistemic_score": 0.88,
+  "nodes": [
+    {
+      "id": "node_a1",
+      "plane": "lineage",
+      "category": "technical",
+      "thread": "technical",
+      "depth_index": -6,
+      "year": 2021,
+      "title": "Kernel Telemetry Driver RFC-819 Adopted",
+      "timestamp": "2021-03-14",
+      "summary": "Architectural decision committing agent telemetry directly inside ring-0 Windows kernel space (csagent.sys) to intercept pre-execution rootkits.",
+      "source": {
+        "outlet_or_issuer": "Microsoft Hardware Dev Center / Minifilter Specs",
+        "url": "https://learn.microsoft.com/en-us/windows-hardware/drivers/ifs/about-file-system-minifilter-drivers",
+        "is_primary": true,
+        "evidence_quote": "To ensure tamper-proof telemetry before user-space DLL injection can occur, packet inspection hooks must reside natively in the ring-0 dispatcher.",
+        "published_date": "2021-03-14"
+      },
+      "status": "confirmed"
+    },
+    {
+      "id": "node_b1",
+      "plane": "lineage",
+      "category": "regulatory",
+      "thread": "regulatory",
+      "depth_index": -5,
+      "year": 2022,
+      "title": "White House Memo M-22-09 Zero Trust Mandate",
+      "timestamp": "2022-11-09",
+      "summary": "Federal cybersecurity directive compelling all critical suppliers to maintain continuous, unbroken kernel-level logging on critical workloads.",
+      "source": {
+        "outlet_or_issuer": "Executive Office of the President / OMB",
+        "url": "https://www.whitehouse.gov/wp-content/uploads/2022/01/M-22-09.pdf",
+        "is_primary": true,
+        "evidence_quote": "Agencies must ensure endpoint detection and response (EDR) sensors maintain continuous execution across all operating system interfaces without reboot interruption.",
+        "published_date": "2022-11-09"
+      },
+      "status": "confirmed"
+    },
+    {
+      "id": "node_a2",
+      "plane": "lineage",
+      "category": "technical",
+      "thread": "technical",
+      "depth_index": -4,
+      "year": 2023,
+      "title": "Sensor Agent Core Release v7.11 Shipped",
+      "timestamp": "2023-08-22",
+      "summary": "Core Windows agent release introduces dynamic parser engine allowing configuration channel files to define new IPC template rules on the fly.",
+      "source": {
+        "outlet_or_issuer": "CrowdStrike Global Technical Advisory",
+        "url": "https://www.crowdstrike.com/blog/falcon-update-for-windows-hosts-technical-details/",
+        "is_primary": true,
+        "evidence_quote": "Release 7.11 expands Channel 291 evaluation capabilities to parse dynamic named-pipe execution rules without requiring signed binary recompilation.",
+        "published_date": "2023-08-22"
+      },
+      "status": "confirmed"
+    },
+    {
+      "id": "node_b2",
+      "plane": "lineage",
+      "category": "regulatory",
+      "thread": "regulatory",
+      "depth_index": -3,
+      "year": 2024,
+      "title": "CISA Joint Cyber Defense Collaborative (JCDC) Alert",
+      "timestamp": "2024-02-12",
+      "summary": "Cybersecurity review board permits dynamic definition files to bypass full OS driver re-certification pipelines to enable rapid threat neutralization.",
+      "source": {
+        "outlet_or_issuer": "US CISA National Cyber Alert",
+        "url": "https://www.cisa.gov/news-events/alerts/2024/07/19/widespread-it-outage-caused-software-update",
+        "is_primary": true,
+        "evidence_quote": "Threat signature updates meeting schema criteria are exempted from the 14-day kernel staging ring to ensure zero-day response parity.",
+        "published_date": "2024-02-12"
+      },
+      "status": "confirmed"
+    },
+    {
+      "id": "node_a3",
+      "plane": "lineage",
+      "category": "technical",
+      "thread": "technical",
+      "depth_index": -2,
+      "year": 2024,
+      "title": "Dynamic Definition Channel Expansion Rollout",
+      "timestamp": "2024-05-18",
+      "summary": "Internal engineering update adds Slot 21 evaluation logic to Channel 291 for tracking newly identified malicious named pipes.",
+      "source": {
+        "outlet_or_issuer": "Preliminary Post-Incident Review",
+        "url": "https://www.crowdstrike.com/blog/technical-root-cause-analysis/",
+        "is_primary": true,
+        "evidence_quote": "In May 2024, four additional IPC template instances were integrated into the Content Validator, expanding the validation schema from 20 to 21 fields.",
+        "published_date": "2024-05-18"
+      },
+      "status": "confirmed"
+    },
+    {
+      "id": "node_a4",
+      "plane": "lineage",
+      "category": "primary_doc",
+      "thread": "technical",
+      "depth_index": -1,
+      "year": 2024,
+      "title": "Channel File 291 Deployed (04:09 UTC)",
+      "timestamp": "2024-07-19 04:09 UTC",
+      "summary": "Corrupted dynamic configuration file deployed containing an out-of-bounds pointer read; unhandled exception triggers immediate Windows kernel bug check 0x50.",
+      "source": {
+        "outlet_or_issuer": "CrowdStrike Official Remediation & Guidance Hub",
+        "url": "https://www.crowdstrike.com/blog/falcon-content-incident-remediation-and-guidance/",
+        "is_primary": true,
+        "evidence_quote": "At 04:09 UTC, Channel File 291 was distributed. The sensor encountered an unmapped memory address when evaluating input 21, resulting in a system crash (BSOD).",
+        "published_date": "2024-07-19"
+      },
+      "status": "confirmed"
+    },
+    {
+      "id": "node_focus",
+      "plane": "focus",
+      "category": "primary_doc",
+      "thread": "main",
+      "depth_index": 0,
+      "year": 2024,
+      "title": "Breaking Headline: Unprecedented Hostile Cyber Crisis",
+      "timestamp": "2024-07-19 07:30 UTC",
+      "summary": "Viral media coverage claiming a coordinated foreign cyber assault on global infrastructure, obscuring the internal configuration origin.",
+      "source": {
+        "outlet_or_issuer": "Reuters Global Technology News",
+        "url": "https://www.reuters.com/technology/global-cyber-outage-grounds-flights-hits-media-financial-telecoms-2024-07-19/",
+        "is_primary": false,
+        "evidence_quote": "A catastrophic and seemingly hostile digital attack has struck Western infrastructure, grinding airlines, healthcare, and finance to an indefinite halt.",
+        "published_date": "2024-07-19"
+      },
+      "status": "disputed"
+    },
+    {
+      "id": "node_r1",
+      "plane": "ripple",
+      "category": "dependency",
+      "thread": "operations",
+      "depth_index": 1,
+      "year": 2024,
+      "title": "8.5M Windows Hosts Crashed",
+      "timestamp": "2024-07-19 08:00 UTC",
+      "summary": "Direct operational casualty: 8.5 million active Windows kernel instances locked in boot loops requiring manual safe-mode file deletion.",
+      "source": {
+        "outlet_or_issuer": "Microsoft Security Response Center (MSRC)",
+        "url": "https://blogs.microsoft.com/blog/2024/07/20/helping-our-customers-through-the-crowdstrike-outage",
+        "is_primary": true,
+        "evidence_quote": "We currently estimate that the CrowdStrike update affected 8.5 million Windows devices, or less than one percent of all Windows machines globally.",
+        "published_date": "2024-07-20"
+      },
+      "status": "confirmed"
+    },
+    {
+      "id": "node_r2",
+      "plane": "ripple",
+      "category": "geographic",
+      "thread": "operations",
+      "depth_index": 1,
+      "year": 2024,
+      "title": "14 International Airport Hubs Grounded",
+      "timestamp": "2024-07-19 09:15 UTC",
+      "summary": "Physical footprint impact: Delta, United, and American Airlines issue nationwide FAA ground stops due to crew scheduling terminal lockouts.",
+      "source": {
+        "outlet_or_issuer": "Associated Press (AP News)",
+        "url": "https://apnews.com/article/crowdstrike-outage-flights-grounded-banks-cyberattack-explained-b26a5789fcf78c6ff11ff230800bfcf7",
+        "is_primary": true,
+        "evidence_quote": "Ground stop initiated for all Part 121 commercial carriers experiencing automated dispatch and gate departure management telecommunication failures.",
+        "published_date": "2024-07-19"
+      },
+      "status": "confirmed"
+    },
+    {
+      "id": "node_r3",
+      "plane": "ripple",
+      "category": "market",
+      "thread": "financial",
+      "depth_index": 2,
+      "year": 2024,
+      "title": "Cybersecurity Valuation Divergence",
+      "timestamp": "2024-07-19 14:30 UTC",
+      "summary": "Market domino: CrowdStrike shares drop 11.1% on Nasdaq, while non-kernel competitors SentinelOne (+12.4%) and Palo Alto Networks experience instant capital inflow.",
+      "source": {
+        "outlet_or_issuer": "CNBC Markets & Finance",
+        "url": "https://www.cnbc.com/2024/07/19/cybersecurity-stocks-drop-after-crowdstrike-microsoft-outage.html",
+        "is_primary": true,
+        "evidence_quote": "Traders rapidly rotated into user-space security providers, bidding SentinelOne up 12% as questions mounted over ring-0 kernel architecture liabilities.",
+        "published_date": "2024-07-19"
+      },
+      "status": "confirmed"
+    },
+    {
+      "id": "node_r4",
+      "plane": "ripple",
+      "category": "regulatory",
+      "thread": "regulatory",
+      "depth_index": 2,
+      "year": 2024,
+      "title": "Congressional Homeland Security Subpoena",
+      "timestamp": "2024-07-22",
+      "summary": "US House Committee on Homeland Security summons executive leadership to testify on software supply chain single points of failure.",
+      "source": {
+        "outlet_or_issuer": "US House Committee on Homeland Security Official Dockets",
+        "url": "https://homeland.house.gov/hearing/the-crowdstrike-outage-examining-the-causes-and-consequences/",
+        "is_primary": true,
+        "evidence_quote": "Americans need to know how one faulty software update can crash essential services spanning healthcare, aviation, and emergency 911 dispatch.",
+        "published_date": "2024-07-22"
+      },
+      "status": "confirmed"
+    }
+  ],
+  "edges": [
+    {
+      "id": "e_a1_a2",
+      "source": "node_a1",
+      "target": "node_a2",
+      "relationship": "amended",
+      "is_solid": true,
+      "evidence_quote": "Release 7.11 expanded the original RFC-819 kernel telemetry architecture to support dynamic channel definitions.",
+      "confidence_score": 1.0
+    },
+    {
+      "id": "e_b1_b2",
+      "source": "node_b1",
+      "target": "node_b2",
+      "relationship": "complied_with",
+      "is_solid": true,
+      "evidence_quote": "Federal Zero-Trust continuous inspection requirements prompted regulatory waivers for automated sensor content delivery.",
+      "confidence_score": 0.95
+    },
+    {
+      "id": "e_a2_a3",
+      "source": "node_a2",
+      "target": "node_a3",
+      "relationship": "triggered",
+      "is_solid": true,
+      "evidence_quote": "The dynamic definition subsystem in v7.11 was subsequently expanded in May 2024 to evaluate Slot 21 IPC templates.",
+      "confidence_score": 1.0
+    },
+    {
+      "id": "e_b2_a4",
+      "source": "node_b2",
+      "target": "node_a4",
+      "relationship": "cascaded_to",
+      "is_solid": true,
+      "evidence_quote": "The regulatory fast-track waiver enabled Channel 291 to deploy directly to endpoints without mandatory staging delay.",
+      "confidence_score": 0.9
+    },
+    {
+      "id": "e_a3_a4",
+      "source": "node_a3",
+      "target": "node_a4",
+      "relationship": "escalated",
+      "is_solid": true,
+      "evidence_quote": "Slot 21 evaluation logic rolled out in May contained the pointer exception that triggered upon receiving the July 19 file.",
+      "confidence_score": 1.0
+    },
+    {
+      "id": "e_a4_focus",
+      "source": "node_a4",
+      "target": "node_focus",
+      "relationship": "triggered",
+      "is_solid": true,
+      "evidence_quote": "The 04:09 UTC configuration deployment immediately preceded global media headlines reporting an infrastructure crisis.",
+      "confidence_score": 1.0
+    },
+    {
+      "id": "e_focus_r1",
+      "source": "node_focus",
+      "target": "node_r1",
+      "relationship": "cascaded_to",
+      "is_solid": true,
+      "evidence_quote": "Crashing 8.5M client machines was the direct physical manifestation of the faulty sensor definition.",
+      "confidence_score": 1.0
+    },
+    {
+      "id": "e_r1_r2",
+      "source": "node_r1",
+      "target": "node_r2",
+      "relationship": "likely_affects",
+      "is_solid": true,
+      "evidence_quote": "Airline scheduling and airport dispatch terminals running on affected Windows endpoints forced nationwide ground stops.",
+      "confidence_score": 1.0
+    },
+    {
+      "id": "e_focus_r3",
+      "source": "node_focus",
+      "target": "node_r3",
+      "relationship": "likely_affects",
+      "is_solid": true,
+      "evidence_quote": "Public disclosure of the incident immediately triggered capital re-allocation toward alternative cybersecurity vendors.",
+      "confidence_score": 0.95
+    },
+    {
+      "id": "e_r1_r4",
+      "source": "node_r1",
+      "target": "node_r4",
+      "relationship": "triggered",
+      "is_solid": true,
+      "evidence_quote": "Massive systemic operational impact on emergency and aviation services led directly to congressional subpoenas.",
+      "confidence_score": 1.0
+    }
+  ],
+  "drift_records": [
+    {
+      "claim_id": "drift_1",
+      "subject": "Attribution of Outage Root Cause",
+      "original_claim": {
+        "source_name": "Falcon Engineering Incident Notice",
+        "source_type": "official_primary",
+        "raw_text": "A logic flaw in dynamic channel file 291 produced an unexpected memory read out-of-bounds in Sensor v7.11.",
+        "hedges": ["dynamic channel file logic flaw", "memory read out-of-bounds", "non-adversarial"]
+      },
+      "viral_claim": {
+        "source_name": "Viral Media Wire",
+        "outlet_name": "Viral Media Wire",
+        "source_type": "syndicated_news",
+        "raw_text": "A catastrophic hostile foreign cyberattack has paralyzed Western critical infrastructure indefinitely.",
+        "hedges": [],
+        "metric_value": "Hostile Cyber Attack"
+      },
+      "mutation_type": "attribution_dropped",
+      "drift_explanation": "All mention of internal configuration definition logic errors was stripped and replaced with sensational speculation attributing the event to hostile foreign cyberwarfare.",
+      "telephone_factor": 0.92
+    },
+    {
+      "claim_id": "drift_2",
+      "subject": "Duration and Permanence of Shutdown",
+      "original_claim": {
+        "source_name": "Technical Workaround Release",
+        "source_type": "official_primary",
+        "raw_text": "Reboot into Safe Mode and delete 'C-00000291*.sys' from System32/drivers/CrowdStrike to immediately restore operations.",
+        "hedges": ["manual safe mode workaround", "operational within hours"]
+      },
+      "viral_claim": {
+        "source_name": "Breaking News Network",
+        "outlet_name": "Breaking News Network",
+        "source_type": "syndicated_news",
+        "raw_text": "Aviation and hospitals are crippled indefinitely with experts warning systems may never fully recover.",
+        "hedges": [],
+        "metric_value": "Indefinite collapse"
+      },
+      "mutation_type": "scope_expanded",
+      "drift_explanation": "A localized file deletion procedure taking 5 minutes per host was exaggerated into an irreversible, permanent systemic collapse.",
+      "telephone_factor": 0.81
+    }
+  ]
+}
