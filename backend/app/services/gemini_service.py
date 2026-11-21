@@ -1,18 +1,29 @@
 import json
+import asyncio
 from datetime import datetime, timezone
-from typing import List
+from typing import List, Optional
 from app.config import GEMINI_API_KEY
 from app.models.schemas import CitationHit, InterrogationVerdict
 
+GEMINI_MODEL = "gemini-3.1-flash-lite"
+
+
+def _run_gemini(prompt: str) -> str:
+    """Synchronous Gemini call wrapped for use in async context."""
+    from google import genai
+    client = genai.Client(api_key=GEMINI_API_KEY)
+    response = client.models.generate_content(model=GEMINI_MODEL, contents=prompt)
+    return response.text.strip()
+
+
 async def synthesize_interrogation(claim_text: str, citations: List[CitationHit]) -> InterrogationVerdict:
     """
-    Uses Gemini 2.5 Flash to synthesize live You.com citations into an epistemic verdict.
-    If GEMINI_API_KEY is unset or unavailable, produces an intelligent deterministic synthesis.
+    Uses Gemini Flash to synthesize live You.com citations into an epistemic verdict.
+    Falls back to intelligent deterministic synthesis if Gemini is unavailable.
     """
     now_str = datetime.now(timezone.utc).strftime("%Y-%m-%d %H:%M:%S UTC")
-    
     citation_context = "\n".join([f"- [{c.title}]({c.url}): {c.snippet}" for c in citations])
-    
+
     prompt = f"""You are an objective investigative epistemic analyst.
 Evaluate this viral claim against the real-time citations retrieved from the live web.
 
@@ -29,13 +40,8 @@ Return ONLY valid JSON with keys: "verdict", "summary"."""
 
     if GEMINI_API_KEY:
         try:
-            from google import genai
-            client = genai.Client(api_key=GEMINI_API_KEY)
-            response = client.models.generate_content(
-                model="gemini-2.5-flash",
-                contents=prompt
-            )
-            raw_text = response.text.strip()
+            loop = asyncio.get_event_loop()
+            raw_text = await loop.run_in_executor(None, _run_gemini, prompt)
             # Clean possible markdown fences
             if raw_text.startswith("```json"):
                 raw_text = raw_text[7:]
@@ -44,7 +50,6 @@ Return ONLY valid JSON with keys: "verdict", "summary"."""
             if raw_text.endswith("```"):
                 raw_text = raw_text[:-3]
             data = json.loads(raw_text.strip())
-            
             return InterrogationVerdict(
                 target_claim_id="interrogated",
                 query_run=f"contradiction OR official statement regarding {claim_text[:60]}",
@@ -53,29 +58,28 @@ Return ONLY valid JSON with keys: "verdict", "summary"."""
                 citations=citations,
                 as_of_timestamp=now_str
             )
-        except Exception as e:
-            # Fallback to intelligent deterministic assessment if API hit limit/exception
+        except Exception:
             pass
 
-    # High-signal deterministic epistemic analysis
+    # High-signal deterministic epistemic analysis fallback
     lower_claim = claim_text.lower()
     if any(k in lower_claim for k in ["cyberattack", "foreign", "hostile", "state-sponsored"]):
         verdict = "rebuttal_found"
         summary = (
             "Primary Root Cause Analysis (RCA) from vendor and US CISA confirms this was not a cyberattack. "
-            "The failure was traced to a logic flaw in dynamic channel file 291 causing a memory read error in Sensor v7.11."
+            "The failure was traced to a logic flaw in a dynamic channel file causing a memory read error."
         )
-    elif any(k in lower_claim for k in ["indefinitely", "catastrophic", "permanent"]):
+    elif any(k in lower_claim for k in ["indefinitely", "catastrophic", "permanent", "collapse"]):
         verdict = "active_dispute"
         summary = (
-            "Viral headlines characterized the outage as 'indefinite', whereas official technical disclosures "
-            "provided a manual remediation workaround (deleting C-00000291*.sys) within 3 hours."
+            "Viral headlines characterized the event as 'permanent' or 'indefinite', whereas official disclosures "
+            "provided specific, time-bounded remediation pathways within hours or days."
         )
     else:
         verdict = "uncontested"
         summary = (
             "Evidence from multiple independent reporting outlets and technical advisories corroborates "
-            "the core timeline of the configuration deployment."
+            "the core timeline and factual substance of the reported event."
         )
 
     return InterrogationVerdict(
@@ -86,3 +90,58 @@ Return ONLY valid JSON with keys: "verdict", "summary"."""
         citations=citations,
         as_of_timestamp=now_str
     )
+
+
+async def synthesize_lineage_edges(
+    headline: str,
+    articles: List[dict]
+) -> Optional[List[dict]]:
+    """
+    Uses Gemini Flash to generate high-quality, topic-specific connective tissue
+    for the causal edges between antecedent news articles and the focus headline.
+    Returns list of dicts with keys: relationship, connective_tissue, relevancy_label, relevancy_percent.
+    Falls back to None on error (caller uses generic ladder).
+    """
+    if not GEMINI_API_KEY or len(articles) < 2:
+        return None
+
+    article_summary = "\n".join([
+        f"{i+1}. [{a.get('title', 'Article')}] - {a.get('snippet', '')[:120]}"
+        for i, a in enumerate(articles)
+    ])
+    focus = headline[:200]
+
+    prompt = f"""You are an investigative journalist building a causal lineage chain.
+
+TARGET BREAKING HEADLINE:
+"{focus}"
+
+PRECEDING NEWS ARTICLES (in chronological order, oldest first):
+{article_summary}
+
+For each consecutive pair of articles (1→2, 2→3, 3→breaking headline), generate a causal edge.
+You must produce exactly {len(articles)} edges (the last edge always connects the final article to the breaking headline).
+
+For each edge produce:
+- "relationship": short verb phrase (e.g. "triggered", "escalated", "enabled", "exposed", "caused")
+- "connective_tissue": 1-2 sentence causal explanation of HOW this earlier event directly led to the next
+- "relevancy_label": 2-4 word label describing the causal mechanism (e.g. "Direct Regulatory Trigger", "Escalating Market Pressure")
+- "relevancy_percent": integer 70-99
+
+Return ONLY a valid JSON array of exactly {len(articles)} edge objects. No markdown, no extra text."""
+
+    try:
+        loop = asyncio.get_event_loop()
+        raw = await loop.run_in_executor(None, _run_gemini, prompt)
+        if raw.startswith("```json"):
+            raw = raw[7:]
+        if raw.startswith("```"):
+            raw = raw[3:]
+        if raw.endswith("```"):
+            raw = raw[:-3]
+        edges = json.loads(raw.strip())
+        if isinstance(edges, list) and len(edges) >= len(articles):
+            return edges[:len(articles)]
+    except Exception:
+        pass
+    return None
